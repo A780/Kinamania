@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>gfx/background.png</file>
+        <file>gfx/can_0.png</file>
+        <file>gfx/can_1.png</file>
+        <file>gfx/can_2.png</file>
+        <file>gfx/can_3.png</file>
+        <file>gfx/can_4.png</file>
+        <file>gfx/can_5.png</file>
+        <file>gfx/can_6.png</file>
+        <file>gfx/can_7.png</file>
+        <file>gfx/chief_0.png</file>
+        <file>gfx/chief_1.png</file>
+        <file>gfx/chief_2.png</file>
+        <file>gfx/chief_3.png</file>
+        <file>gfx/chair.png</file>
+        <file>gfx/bsod.png</file>
+        <file>gfx/broken_0.png</file>
+        <file>gfx/broken_1.png</file>
+        <file>gfx/digit_0.png</file>
+        <file>gfx/digit_1.png</file>
+        <file>gfx/digit_2.png</file>
+        <file>gfx/digit_3.png</file>
+        <file>gfx/digit_4.png</file>
+        <file>gfx/digit_5.png</file>
+        <file>gfx/digit_6.png</file>
+        <file>gfx/digit_7.png</file>
+        <file>gfx/digit_8.png</file>
+        <file>gfx/digit_9.png</file>
+        <file>gfx/icon.png</file>
+        <file>l10n/chervemania_en.qm</file>
+        <file>l10n/chervemania_ru.qm</file>
+    </qresource>
+</RCC>
