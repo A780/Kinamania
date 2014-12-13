@@ -230,6 +230,8 @@ void Widget::resetAllVariables()
     msec = sideState = 0;
     canState = (-1);
     chiefState = 0;
+    dendyState = (-1);
+    dendyDelay = 0;
     score = 0;
     //    score = 0;
     lives = 0;
@@ -253,6 +255,8 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     }
 
     int num = qrand() % 16;
+    int dendy = qrand() % 100;
+
     ++msec;
 
     if (msec == keysDelay && (currentGameState == GameOver || currentGameState == TheWon)) {
@@ -287,6 +291,42 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     if (msec >= delay && currentGameState == TheGame) { // 100 is one sec
         msec = 0;
 
+        if (dendyState == (-1)) {
+            if (dendy >= 20 && dendy < 25) {
+            //if (1) {
+                if (!(dendyDelay > 0)) {
+                    dendyDelay = 4;
+                }
+            }
+        }
+
+        if (dendyDelay >= 0) {
+            --dendyDelay;
+        }
+
+        if (dendyDelay <= 0 && dendyState != (-1)) {
+            dendyState = (-1);
+        }
+
+#ifdef _DEBUG
+        qDebug() << "############### Dendy" << dendyDelay << dendyState << dendy;
+#endif
+
+        switch (dendyDelay) {
+        case 3:
+        case 2: {
+            dendyState = 0;
+            break;
+        }
+        case 1:
+        case 0: {
+            dendyState = 1;
+            break;
+        }
+        default:
+            break;
+        }
+
         if (canState == (-1)) {
 
             if (num >= 0 && num < 4) {
@@ -316,7 +356,7 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 #ifdef _DEBUG
             qDebug() << "You won! Can is:" << score;
 #endif
-        } else if (canState == 4 && sideState != chiefState) {
+        } else if (canState == 4 && sideState != chiefState && dendyState == (-1)) {
             --lives;
             if (sound && s_miss->isFinished()) {
                 s_miss->play();
@@ -560,6 +600,11 @@ void Widget::drawGameFrame()
             painter.drawPixmap(chiefCoords[chiefState], pixChiefs[chiefState]);
         }
 
+        // Draw Dendy
+        if (dendyState != (-1)) {
+            painter.drawPixmap(dendyCoords[dendyState], pixDendy[dendyState]);
+        }
+
         // Draw chairbar
         drawChairBar(painter);
 
@@ -649,9 +694,9 @@ void Widget::drawAll(QPainter &painter)
     }
 
     // Draw all buttons
-//    for (int i = 0; i < 7; ++i) {
-//        painter.drawPixmap(buttonCoords[i], pixButtons[i]);
-//    }
+    //    for (int i = 0; i < 7; ++i) {
+    //        painter.drawPixmap(buttonCoords[i], pixButtons[i]);
+    //    }
 }
 
 void Widget::drawKeyHints(QPainter &painter)

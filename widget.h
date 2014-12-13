@@ -34,11 +34,14 @@ private:
     int sideState;
     int canState;
     int chiefState;
+    int dendyState;
 
     int buttonState;
 
     bool sound;
     int soundDelay;
+
+    int dendyDelay;
 
     int keysDelay;
     bool keysAvailable;
