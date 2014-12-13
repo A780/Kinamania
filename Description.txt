@@ -1,0 +1,39 @@
+Please rename the "gfx_example" folder to "gfx", if you want use graphics from there.
+
+List of required files:
+12/13/2014  12:41 AM           254,111 background.png
+12/12/2014  10:47 PM             4,534 broken_0.png
+12/12/2014  10:51 PM             4,531 broken_1.png
+12/12/2014  08:37 PM            34,097 bsod.png
+12/13/2014  07:14 PM            10,332 button_0.png
+12/13/2014  07:16 PM            10,221 button_1.png
+12/13/2014  07:18 PM            10,044 button_2.png
+12/13/2014  07:20 PM             9,549 button_3.png
+12/13/2014  07:22 PM             5,095 button_4.png
+12/13/2014  07:26 PM             5,534 button_5.png
+12/13/2014  07:28 PM             5,274 button_6.png
+12/12/2014  05:14 PM             3,392 can_0.png
+12/12/2014  05:14 PM             4,312 can_1.png
+12/12/2014  05:14 PM             3,972 can_2.png
+12/12/2014  05:15 PM             3,368 can_3.png
+12/12/2014  03:33 PM             3,392 can_4.png
+12/12/2014  05:15 PM             4,260 can_5.png
+12/12/2014  05:15 PM             3,953 can_6.png
+12/12/2014  05:16 PM             3,370 can_7.png
+12/12/2014  06:39 PM             3,641 chair.png
+12/12/2014  05:29 PM             8,393 chief_0.png
+12/12/2014  05:24 PM             8,472 chief_1.png
+12/12/2014  05:52 PM             9,238 chief_2.png
+12/12/2014  05:53 PM             9,208 chief_3.png
+12/13/2014  03:26 PM            11,076 dendy_0.png
+12/13/2014  03:21 PM            11,102 dendy_1.png
+12/13/2014  12:33 AM             3,169 digit_0.png
+12/13/2014  12:34 AM               289 digit_1.png
+12/13/2014  12:34 AM               343 digit_2.png
+12/13/2014  12:34 AM               341 digit_3.png
+12/13/2014  12:34 AM               312 digit_4.png
+12/13/2014  12:34 AM               341 digit_5.png
+12/13/2014  12:34 AM               372 digit_6.png
+12/13/2014  12:34 AM               290 digit_7.png
+12/13/2014  12:34 AM               408 digit_8.png
+12/13/2014  12:34 AM               377 digit_9.png
