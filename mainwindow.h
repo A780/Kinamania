@@ -22,6 +22,7 @@ protected:
 protected slots:
     void slotShowAbout();
     void slotDisableSoundMenu();
+    void slotSetOriginalScreenSize();
 
 protected slots:
     void resizeEvent(QResizeEvent *event);

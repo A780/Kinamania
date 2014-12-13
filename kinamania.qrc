@@ -28,8 +28,6 @@
         <file>gfx/digit_8.png</file>
         <file>gfx/digit_9.png</file>
         <file>gfx/icon.png</file>
-        <file>l10n/chervemania_en.qm</file>
-        <file>l10n/chervemania_ru.qm</file>
         <file>gfx/dendy_0.png</file>
         <file>gfx/dendy_1.png</file>
         <file>gfx/button_0.png</file>
@@ -39,5 +37,7 @@
         <file>gfx/button_4.png</file>
         <file>gfx/button_5.png</file>
         <file>gfx/button_6.png</file>
+        <file>l10n/kinamania_en.qm</file>
+        <file>l10n/kinamania_ru.qm</file>
     </qresource>
 </RCC>

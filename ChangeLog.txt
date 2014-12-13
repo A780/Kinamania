@@ -9,6 +9,11 @@ v. 0.2 (12/13/2014)
     * Add buttons pushing animation;
     * Add playing sound after winning the game;
     * Add custom skills array;
+    * Add Dendy logic;
+    * Add screen resizing;
+    * Rebrending to "Kinamania";
+    * Add original screen size function;
+    * Fix crash on stopAllSfx() func;
 
 v. 0.1 (12/12/2014)
 

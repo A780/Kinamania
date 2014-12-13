@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
-TARGET = CherveMania
+TARGET = Kinamania
 TEMPLATE = app
 
 QMAKE_CXXFLAGS_DEBUG += -D_DEBUG
@@ -23,14 +23,14 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-RESOURCES += chervemania.qrc
+RESOURCES += kinamania.qrc
 
 # Windows Executable Icon
-win32:RC_FILE = chervemania.rc
+win32:RC_FILE = kinamania.rc
 
-TRANSLATIONS += l10n/chervemania_ru.ts \
-                l10n/chervemania_en.ts
+TRANSLATIONS += l10n/kinamania_ru.ts \
+                l10n/kinamania_en.ts
 
 OTHER_FILES +=  ReadMe.md \
                 ChangeLog.txt \
-                chervemania.rc
+                kinamania.rc

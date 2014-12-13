@@ -223,10 +223,10 @@ void Widget::initStrings()
     keys[3] = 'L';
 
     strPause = tr("Pause");
-    strPressKey = tr("Press any key for start game!");
+    strPressKey = tr("Press any key to start the game!");
     strGameOver = tr("Game over!");
 
-    strWindowTitle = tr("CherveMania - The Game");
+    strWindowTitle = tr("Kinamania - The Game");
 }
 
 void Widget::refreshDelay()
@@ -318,9 +318,9 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     }
 
     if (msec == soundDelay && currentGameState == GameOver) { // Fix bug with laggy playing this sound
-        //for (int i = 0; i < 50; ++i) {
-        stopAllSfx();
-        //}
+        if (sound) {
+            stopAllSfx();
+        }
         if (sound && s_gameOver->isFinished()) {
 #ifdef _DEBUG
             qDebug() << "############### Is playing?";
@@ -330,7 +330,9 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     }
 
     if (msec == soundDelay && currentGameState == TheWon) {
-        stopAllSfx();
+        if (sound) {
+            stopAllSfx();
+        }
         if (sound && s_gameOver->isFinished()) {
             s_Win->play();
         }

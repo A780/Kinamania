@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QTranslator appTranslator;
-    appTranslator.load("chervemania_" + QLocale::system().name(), "://l10n/");
+    appTranslator.load("kinamania_" + QLocale::system().name(), "://l10n/");
     a.installTranslator(&appTranslator);
 
     MainWindow w;

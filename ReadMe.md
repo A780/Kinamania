@@ -1,4 +1,4 @@
-CherveMania
+Kinamania
 =============
 
 Simple "Game and Watch" game clone.
@@ -6,7 +6,7 @@ Simple "Game and Watch" game clone.
 ## Screens
 
 ### Russian:
-![Windows 7](https://raw.github.com/A780/CherveMania/master/screens/chervemania_ru.png)
+![Windows 7](https://raw.github.com/A780/Kinamania/master/screens/kinamania_ru.png)
 
 ### English:
-![Windows 7](https://raw.github.com/A780/CherveMania/master/screens/chervemania_en.png)
+![Windows 7](https://raw.github.com/A780/Kinamania/master/screens/kinamania_en.png)
