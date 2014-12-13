@@ -285,7 +285,7 @@ void Widget::paintEvent(QPaintEvent */*event*/)
 {
     QPainter painter(this);
 
-    if (screen_w != 640 && screen_h != 399) {
+    if (screen_w != 640 || screen_h != 399) {
         painter.drawPixmap(0, 0, pixSurface->scaled(screen_w, screen_h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     } else {
         painter.drawPixmap(0, 0, *pixSurface);

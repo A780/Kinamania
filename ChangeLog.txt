@@ -22,7 +22,9 @@ v. 0.2 (12/13/2014)
     * Rewrite about dialog;
     * Refresh translations and add link on teaser of Kinamania game;
     * Add cool winning sound;
-    * Fix bug with russian key layout.
+    * Fix bug with russian key layout;
+    * Fix screen coordinats;
+    * Fix bug with resizing screen.
 
 v. 0.1 (12/12/2014)
 
