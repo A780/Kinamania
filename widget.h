@@ -124,6 +124,8 @@ private:
     void initButtonsCoords();
 
     void initMouseCoords();
+    void updateMouserCoords();
+    int getScaleLevel() const;
 
     void initLevels();
 
@@ -141,6 +143,10 @@ private:
     void drawKeyHints(QPainter &painter);
     void drawGameText(const QString &aStr, QPainter &painter);
     void drawButtons(QPainter &painter);
+
+#ifdef _DEBUG
+    void drawRectangles(QPainter &painter);
+#endif
 
     void drawDigitPairs(int number, int pair, QPainter &painter);
 
@@ -166,6 +172,7 @@ protected slots:
     void slotEnableSound(bool aSound);
     void slotStartNewGame();
     void slotReset();
+    void slotSetPixmapSize(int w, int h);
 };
 
 #endif // WIDGET_H

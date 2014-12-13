@@ -3,6 +3,10 @@
 
 #include <QMessageBox>
 
+#ifdef _DEBUG
+#include <QDebug>
+#endif
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -15,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->action_Reset, SIGNAL(triggered()), ui->centralWidget, SLOT(slotReset()));
     connect(ui->action_Sound, SIGNAL(triggered(bool)), ui->centralWidget, SLOT(slotEnableSound(bool)));
     connect(ui->centralWidget, SIGNAL(disableSound()), this, SLOT(slotDisableSoundMenu()));
+    connect(this, SIGNAL(setPixmapSize(int,int)), ui->centralWidget, SLOT(slotSetPixmapSize(int,int)));
+
+    resize(640, 399 + ui->menuBar->height());
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -47,6 +54,13 @@ void MainWindow::slotDisableSoundMenu()
 {
     ui->action_Sound->setChecked(false);
     ui->action_Sound->setEnabled(false);
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    qDebug() << event->size().width() << event->size().height() - ui->menuBar->height()
+             << 640.0f / event->size().width() << 399.0f / (event->size().height() - ui->menuBar->height());
+    emit setPixmapSize(event->size().width(), event->size().height() - ui->menuBar->height());
 }
 
 MainWindow::~MainWindow()

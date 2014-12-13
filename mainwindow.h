@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QResizeEvent>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,12 @@ protected:
 protected slots:
     void slotShowAbout();
     void slotDisableSoundMenu();
+
+protected slots:
+    void resizeEvent(QResizeEvent *event);
+
+signals:
+    void setPixmapSize(int, int);
 
 private:
     Ui::MainWindow *ui;

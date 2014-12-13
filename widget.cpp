@@ -55,7 +55,7 @@ Widget::Widget(QWidget *parent)
 
     setFocusPolicy(Qt::StrongFocus); // For Keys!
 
-    setFixedSize(screen_w, screen_h);
+    //setFixedSize(screen_w, screen_h);
     //setWindowIcon();
     //setWindowTitle(strWindowTitle);
 }
@@ -158,6 +158,42 @@ void Widget::initMouseCoords()
     mouseCoords[6] = QRect(QPoint(553, 115), QPoint(553, 115) + QPoint(47, 29));
 }
 
+void Widget::updateMouserCoords()
+{
+    float x = 640.0f / screen_w;
+    float y = 399.0f / screen_h;
+
+    mouseCoords[0] = QRect(QPoint(43 / x, 245 / y), QPoint(43 / x, 245 / y) + QPoint(62 / x, 63 / y));
+    mouseCoords[1] = QRect(QPoint(43 / x, 311 / y), QPoint(43 / x, 311 / y) + QPoint(62 / x, 60 / y));
+    mouseCoords[2] = QRect(QPoint(538 / x, 246 / y), QPoint(538 / x, 246 / y) + QPoint(58 / x, 60 / y));
+    mouseCoords[3] = QRect(QPoint(537 / x, 313 / y), QPoint(537 / x, 313 / y) + QPoint(57 / x, 56 / y));
+    mouseCoords[4] = QRect(QPoint(556 / x, 33 / y), QPoint(556 / x, 33 / y) + QPoint(42 / x, 29 / y));
+    mouseCoords[5] = QRect(QPoint(552 / x, 73 / y), QPoint(552 / x, 73 / y) + QPoint(50 / x, 31 / y));
+    mouseCoords[6] = QRect(QPoint(553 / x, 115 / y), QPoint(553 / x, 115 / y) + QPoint(47 / x, 29 / y));
+}
+
+int Widget::getScaleLevel() const
+{
+    int scale = 1;
+
+    if ((screen_w >= 320 && screen_h <= 640) ||
+            (screen_h >= 240 && screen_h <= 399)) {
+        scale = 1;
+    }
+
+    if ((screen_w > 640 && screen_h <= 1280) ||
+        (screen_h > 399 && screen_h <= 798)) {
+        scale = 2;
+    }
+
+    if ((screen_w > 1280 && screen_h <= 2560) ||
+        (screen_h > 798 && screen_h <= 1197)) {
+        scale = 3;
+    }
+
+    return scale;
+}
+
 void Widget::initLevels()
 {
     levels[0] = 100;
@@ -195,32 +231,36 @@ void Widget::initStrings()
 
 void Widget::refreshDelay()
 {
+#ifdef _DEBUG
+    qDebug() << "--------------- Scale Level is:" << getScaleLevel();
+#endif
+
     if (score >= 0 && score < 10) {
-        delay = levels[0];
+        delay = levels[0] / getScaleLevel();
     }
 
     if (score >= 10 && score < 15) {
-        delay = levels[1];
+        delay = levels[1] / getScaleLevel();
     }
 
     if (score >= 15 && score < 25) {
-        delay = levels[2];
+        delay = levels[2] / getScaleLevel();
     }
 
     if (score >= 25 && score < 50) {
-        delay = levels[3];
+        delay = levels[3] / getScaleLevel();
     }
 
     if (score >= 50 && score < 75) {
-        delay = levels[4];
+        delay = levels[4] / getScaleLevel();
     }
 
     if (score >= 75 && score < 95) {
-        delay = levels[5];
+        delay = levels[5] / getScaleLevel();
     }
 
     if (score >= 95 && score < 100) {
-        delay = levels[6];
+        delay = levels[6] / getScaleLevel();
     }
 }
 
@@ -244,7 +284,15 @@ void Widget::paintEvent(QPaintEvent */*event*/)
 {
     QPainter painter(this);
 
-    painter.drawPixmap(0, 0, *pixSurface);
+    if (screen_w != 640 && screen_h != 399) {
+        painter.drawPixmap(0, 0, pixSurface->scaled(screen_w, screen_h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    } else {
+        painter.drawPixmap(0, 0, *pixSurface);
+    }
+
+#ifdef _DEBUG
+    drawRectangles(painter);
+#endif
 }
 
 void Widget::timerEvent(QTimerEvent */*event*/)
@@ -570,6 +618,14 @@ void Widget::slotReset()
     currentGameState = MainScreen;
 }
 
+void Widget::slotSetPixmapSize(int w, int h)
+{
+    screen_w = w;
+    screen_h = h;
+
+    updateMouserCoords();
+}
+
 void Widget::drawGameFrame()
 {
     pixSurface->fill(Qt::transparent);
@@ -767,7 +823,7 @@ void Widget::drawGameText(const QString &aStr, QPainter &painter)
             offset = 1;
         }
 
-        painter.drawText(0, 0, screen_w, painter.font().pixelSize() + f_offset + offset,
+        painter.drawText(0, 0, 640, painter.font().pixelSize() + f_offset + offset,
                          Qt::AlignHCenter | Qt::AlignVCenter, aStr);
     }
 }
@@ -778,6 +834,16 @@ void Widget::drawButtons(QPainter &painter)
         painter.drawPixmap(buttonCoords[buttonState], pixButtons[buttonState]);
     }
 }
+
+#ifdef _DEBUG
+void Widget::drawRectangles(QPainter &painter)
+{
+    painter.setPen(QPen(Qt::black, 2));
+    for (int i = 0; i < 7; ++i) {
+        painter.drawRect(mouseCoords[i]);
+    }
+}
+#endif
 
 void Widget::drawDigitPairs(int number, int pair, QPainter &painter)
 {
