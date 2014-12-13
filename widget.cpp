@@ -213,6 +213,7 @@ void Widget::initHintsCoords()
     hintsCoords[3] = QPoint(554, 351);
     hintsCoords[4] = QPoint(556, 135);
     hintsCoords[5] = QPoint(569, 52);
+    hintsCoords[6] = QPoint(569, 94);
 }
 
 void Widget::initStrings()
@@ -783,7 +784,7 @@ void Widget::drawKeyHints(QPainter &painter)
             offset = 1;
         }
 
-        for (int j = 0; j < 6; ++j) {
+        for (int j = 0; j < 7; ++j) {
             coords[j].setX(hintsCoords[j].x() + offset);
             coords[j].setY(hintsCoords[j].y() + offset);
         }
@@ -796,6 +797,7 @@ void Widget::drawKeyHints(QPainter &painter)
 
         painter.drawText(coords[4], strPause);
         painter.drawText(coords[5], tr("F5"));
+        painter.drawText(coords[6], tr("F6"));
 
         painter.setFont(fontBig);
     }

@@ -14,6 +14,8 @@ v. 0.2 (12/13/2014)
     * Rebrending to "Kinamania";
     * Add original screen size function;
     * Fix crash on stopAllSfx() func;
+    * Rewrite about dialog;
+    * Refresh translations and add link on teaser of Kinamania game;
 
 v. 0.1 (12/12/2014)
 

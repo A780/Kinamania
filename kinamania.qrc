@@ -39,5 +39,7 @@
         <file>gfx/button_6.png</file>
         <file>l10n/kinamania_en.qm</file>
         <file>l10n/kinamania_ru.qm</file>
+        <file>gfx/eyes.jpg</file>
+        <file>gfx/worm.png</file>
     </qresource>
 </RCC>

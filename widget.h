@@ -93,7 +93,7 @@ private:
     QPoint chiefCoords[4];
     QPoint chairCoords[3];
     QPoint cansCoords[4][4];
-    QPoint hintsCoords[6];
+    QPoint hintsCoords[7];
     QPoint brokenCoords[2];
     QPoint digitCoords[4];
     QPoint dendyCoords[2];
