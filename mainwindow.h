@@ -20,6 +20,7 @@ protected:
 
 protected slots:
     void slotShowAbout();
+    void slotDisableSoundMenu();
 
 private:
     Ui::MainWindow *ui;

@@ -7,7 +7,9 @@
 #include <QPaintEvent>
 #include <QTimerEvent>
 #include <QKeyEvent>
+#include <QMouseEvent>
 
+#include <QStringList>
 
 class Widget : public QWidget
 {
@@ -18,6 +20,9 @@ public:
     ~Widget();
 
 private:
+    int screen_w;
+    int screen_h;
+
     int timerID;
     int msec;
 
@@ -30,17 +35,27 @@ private:
     int canState;
     int chiefState;
 
+    int buttonState;
+
     bool sound;
     int soundDelay;
 
     int keysDelay;
     bool keysAvailable;
 
+    bool sfxDirAndFilesAvailable;
+    bool gfxDirAndFilesAvailable;
+
+    QString dirName;
+
     QChar keys[4];
     QString strPause;
     QString strPressKey;
     QString strGameOver;
     QString strWindowTitle;
+
+    QStringList gfxFiles;
+    QStringList sfxFiles;
 
     enum gameState { // 0 - Main Screen, 1 - Game, 2 - Won, 3 - Game Over, 4 - Pause
         MainScreen,
@@ -57,6 +72,7 @@ private:
     QSound *s_start;
     QSound *s_miss;
     QSound *s_gameOver;
+    QSound *s_Win;
 
     QPixmap *pixSurface;
 
@@ -68,6 +84,8 @@ private:
     QPixmap pixChiefs[4];
     QPixmap pixBroken[2];
     QPixmap pixDigits[10];
+    QPixmap pixDendy[2];
+    QPixmap pixButtons[7];
 
     QPoint chiefCoords[4];
     QPoint chairCoords[3];
@@ -75,8 +93,23 @@ private:
     QPoint hintsCoords[6];
     QPoint brokenCoords[2];
     QPoint digitCoords[4];
+    QPoint dendyCoords[2];
+    QPoint buttonCoords[7];
+
+    QRect mouseCoords[7];
+
+    int levels[7];
 
 private:
+    bool checkAllGfxRes();
+    QStringList getAllGfxFiles() const;
+    QStringList updateGfxListFiles(const QString &dirName);
+    void loadAllGfx();
+
+    bool checkAllSfxRes();
+    QStringList getAllSfxFiles() const;
+    void loadAllSfx();
+
     void initAll();
 
     void initCansCoords();
@@ -84,6 +117,12 @@ private:
     void initChiefCoords();
     void initBrokenCoords();
     void initDigitCoords();
+    void initDendyCoords();
+    void initButtonsCoords();
+
+    void initMouseCoords();
+
+    void initLevels();
 
     void initHintsCoords();
 
@@ -97,7 +136,8 @@ private:
 
     void drawAll(QPainter &painter);
     void drawKeyHints(QPainter &painter);
-    void drawGameText(const int aX, const int aY, const QString &aStr, QPainter &painter);
+    void drawGameText(const QString &aStr, QPainter &painter);
+    void drawButtons(QPainter &painter);
 
     void drawDigitPairs(int number, int pair, QPainter &painter);
 
@@ -108,11 +148,16 @@ private:
     QPixmap getCanPixmap() const;
     QPoint getCanCoords() const;
 
+signals:
+    void disableSound();
+
 protected slots:
     void paintEvent(QPaintEvent *event);
     void timerEvent(QTimerEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 protected slots:
     void slotEnableSound(bool aSound);

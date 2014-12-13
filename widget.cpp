@@ -1,6 +1,8 @@
 #include "widget.h"
 
 #include <QPainter>
+#include <QFileInfo>
+#include <QApplication>
 
 #ifdef _DEBUG
 #include <QDebug>
@@ -9,53 +11,45 @@
 //const int coords[][] = ;
 
 Widget::Widget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      screen_w(640), screen_h(399)
 {
-    // TODO:
-    int screen_w = 640;
-    int screen_h = 399;
+    sound = true;
+    soundDelay = 75;
+
+    keysDelay = 200;
+    keysAvailable = false;
+
+    // Check gfx and sfx dirs
+    gfxDirAndFilesAvailable = checkAllGfxRes();
+    sfxDirAndFilesAvailable = checkAllSfxRes();
+    if (!gfxDirAndFilesAvailable) {
+        dirName = ":/gfx/";
+        gfxFiles = updateGfxListFiles(dirName);
+    }
+
+#ifdef _DEBUG
+    qDebug() << "Using" << dirName << "directory." << sfxDirAndFilesAvailable;
+    QString test;
+    foreach (test, sfxFiles) {
+        qDebug() << test;
+    }
+#endif
 
     initAll();
 
     resetAllVariables();
 
-    sound = true;
-    soundDelay = 75;
-
-    keysDelay = 150;
-    keysAvailable = false;
-
     currentGameState = MainScreen;
 
-    pixBackground.load(":/gfx/background.png"); // Load background
-
-    for (int i = 0; i < 8; ++i) { // 8 is count of frames of cans
-        pixCans[i].load(QString(":/gfx/can_%1.png").arg(i));
+    // ------------------ Load gfx and sfx ------------------- //
+    loadAllGfx();
+    if (sfxDirAndFilesAvailable) {
+        loadAllSfx();
     }
-
-    for (int i = 0; i < 4; ++i) { // 4 state of chief
-        pixChiefs[i].load(QString(":/gfx/chief_%1.png").arg(i));
-    }
-
-    for (int i = 0; i < 2; ++i) { // 2 state of broken pepsi can
-        pixBroken[i].load(QString(":/gfx/broken_%1.png").arg(i));
-    }
-
-    for (int i = 0; i < 10; ++i) { // 10 LCD digits
-        pixDigits[i].load(QString(":/gfx/digit_%1.png").arg(i));
-    }
-
-    pixChair.load("://gfx/chair.png"); // Load chair
-
-    pixWonScreen.load("://gfx/bsod.png"); // Load won screen
+    // ------------------------------------------------------- //
 
     pixSurface = new QPixmap(screen_w, screen_h);
-
-    s_got = new QSound("sfx/Got.wav", this);
-    s_move = new QSound("sfx/Move.wav", this);
-    s_start = new QSound("sfx/Start.wav", this);
-    s_miss = new QSound("sfx/Miss.wav", this);
-    s_gameOver = new QSound("sfx/Gameover.wav", this);
 
     timerID = startTimer(10);
 
@@ -73,8 +67,14 @@ void Widget::initAll()
     initChairCoords();
     initBrokenCoords();
     initDigitCoords();
+    initDendyCoords();
+    initButtonsCoords();
+
+    initMouseCoords();
 
     initHintsCoords();
+
+    initLevels();
 
     initStrings();
 }
@@ -131,14 +131,52 @@ void Widget::initDigitCoords()
     digitCoords[3] = QPoint(404, 86);
 }
 
+void Widget::initDendyCoords()
+{
+    dendyCoords[0] = dendyCoords[1] = QPoint(212, 84);
+}
+
+void Widget::initButtonsCoords()
+{
+    buttonCoords[0] = QPoint(43, 245);
+    buttonCoords[1] = QPoint(43, 311);
+    buttonCoords[2] = QPoint(538, 246);
+    buttonCoords[3] = QPoint(537, 313);
+    buttonCoords[4] = QPoint(556, 33);
+    buttonCoords[5] = QPoint(552, 73);
+    buttonCoords[6] = QPoint(553, 115);
+}
+
+void Widget::initMouseCoords()
+{
+    mouseCoords[0] = QRect(QPoint(43, 245), QPoint(43, 245) + QPoint(62, 63));
+    mouseCoords[1] = QRect(QPoint(43, 311), QPoint(43, 311) + QPoint(62, 60));
+    mouseCoords[2] = QRect(QPoint(538, 246), QPoint(538, 246) + QPoint(58, 60));
+    mouseCoords[3] = QRect(QPoint(537, 313), QPoint(537, 313) + QPoint(57, 56));
+    mouseCoords[4] = QRect(QPoint(556, 33), QPoint(556, 33) + QPoint(42, 29));
+    mouseCoords[5] = QRect(QPoint(552, 73), QPoint(552, 73) + QPoint(50, 31));
+    mouseCoords[6] = QRect(QPoint(553, 115), QPoint(553, 115) + QPoint(47, 29));
+}
+
+void Widget::initLevels()
+{
+    levels[0] = 100;
+    levels[1] = 50;
+    levels[2] = 30;
+    levels[3] = 20;
+    levels[4] = 18;
+    levels[5] = 15;
+    levels[6] = 10;
+}
+
 void Widget::initHintsCoords()
 {
     hintsCoords[0] = QPoint(62, 288);
     hintsCoords[1] = QPoint(62, 351);
     hintsCoords[2] = QPoint(554, 288);
     hintsCoords[3] = QPoint(554, 351);
-    hintsCoords[4] = QPoint(554, 135);
-    hintsCoords[5] = QPoint(175, 34);
+    hintsCoords[4] = QPoint(556, 135);
+    hintsCoords[5] = QPoint(569, 52);
 }
 
 void Widget::initStrings()
@@ -158,44 +196,44 @@ void Widget::initStrings()
 void Widget::refreshDelay()
 {
     if (score >= 0 && score < 10) {
-        delay = 100;
+        delay = levels[0];
     }
 
     if (score >= 10 && score < 15) {
-        delay = 50;
+        delay = levels[1];
     }
 
     if (score >= 15 && score < 25) {
-        delay = 30;
+        delay = levels[2];
     }
 
     if (score >= 25 && score < 50) {
-        delay = 20;
+        delay = levels[3];
     }
 
     if (score >= 50 && score < 75) {
-        delay = 18;
+        delay = levels[4];
     }
 
     if (score >= 75 && score < 95) {
-        delay = 15;
+        delay = levels[5];
     }
 
     if (score >= 95 && score < 100) {
-        delay = 10;
+        delay = levels[6];
     }
 }
 
 void Widget::resetAllVariables()
 {
-
+    buttonState = (-1);
     msec = sideState = 0;
     canState = (-1);
     chiefState = 0;
-//    score = 98;
     score = 0;
-//    lives = 0;
-    lives = 3;
+    //    score = 0;
+    lives = 0;
+    //    lives = 3;
     delay = 100;
     gotIt = 0;
 }
@@ -209,6 +247,11 @@ void Widget::paintEvent(QPaintEvent */*event*/)
 
 void Widget::timerEvent(QTimerEvent */*event*/)
 {
+    if (!sfxDirAndFilesAvailable) {
+        emit disableSound();
+        sound = false;
+    }
+
     int num = qrand() % 16;
     ++msec;
 
@@ -224,13 +267,20 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
     if (msec == soundDelay && currentGameState == GameOver) { // Fix bug with laggy playing this sound
         //for (int i = 0; i < 50; ++i) {
-            stopAllSfx();
+        stopAllSfx();
         //}
         if (sound && s_gameOver->isFinished()) {
 #ifdef _DEBUG
             qDebug() << "############### Is playing?";
 #endif
             s_gameOver->play();
+        }
+    }
+
+    if (msec == soundDelay && currentGameState == TheWon) {
+        stopAllSfx();
+        if (sound && s_gameOver->isFinished()) {
+            s_Win->play();
         }
     }
 
@@ -327,29 +377,41 @@ void Widget::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
     case Qt::Key_Q:
     case Qt::Key_7: {
-        chiefState = 0;
+        chiefState = buttonState = 0;
         break;
     }
     case Qt::Key_P:
     case Qt::Key_9: {
         chiefState = 1;
+        buttonState = 2;
         break;
     }
     case Qt::Key_A:
     case Qt::Key_1: {
         chiefState = 2;
+        buttonState = 1;
         break;
     }
     case Qt::Key_L:
     case Qt::Key_3: {
         chiefState = 3;
+        buttonState = 3;
         break;
     }
     case Qt::Key_Pause:
     case Qt::Key_G: {
+        buttonState = 6;
         if (!state) {
             pauseGame(currentGameState != Pause);
         }
+        break;
+    }
+    case Qt::Key_F6: {
+        buttonState = 5;
+        break;
+    }
+    case Qt::Key_F5: {
+        buttonState = 4;
         break;
     }
     default:
@@ -367,18 +429,92 @@ void Widget::keyReleaseEvent(QKeyEvent *event)
     case Qt::Key_A:
     case Qt::Key_1:
     case Qt::Key_L:
-    case Qt::Key_3: {
+    case Qt::Key_3:
+    case Qt::Key_Pause:
+    case Qt::Key_G:
+    case Qt::Key_F6:
+    case Qt::Key_F5: {
         //chiefState = (-1);
+        buttonState = (-1);
         break;
     }
-        break;
     default:
         break;
     }
 }
 
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+#ifdef _DEBUG
+    qDebug() << "MousePress" << event->pos();
+#endif
+
+    if (currentGameState == MainScreen) {
+        currentGameState = TheGame;
+    }
+
+    bool state = keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
+
+    if (state) {
+        keysAvailable = false;
+        currentGameState = TheGame;
+    }
+
+    gotIt = 0;
+
+    if (mouseCoords[0].contains(event->pos())) {
+        chiefState = buttonState = 0;
+    }
+
+    if (mouseCoords[2].contains(event->pos())) {
+        chiefState = 1;
+        buttonState = 2;
+    }
+
+    if (mouseCoords[1].contains(event->pos())) {
+        chiefState = 2;
+        buttonState = 1;
+    }
+
+    if (mouseCoords[3].contains(event->pos())) {
+        chiefState = 3;
+        buttonState = 3;
+    }
+
+    if (mouseCoords[4].contains(event->pos())) {
+        buttonState = 4;
+        slotStartNewGame();
+    }
+
+    if (mouseCoords[5].contains(event->pos())) {
+        buttonState = 5;
+    }
+
+    if (mouseCoords[6].contains(event->pos())) {
+        buttonState = 6;
+        if (!state) {
+            pauseGame(currentGameState != Pause);
+        }
+    }
+}
+
+void Widget::mouseReleaseEvent(QMouseEvent *event)
+{
+#ifdef _DEBUG
+    qDebug() << "MouseRelease" << event->pos();
+#endif
+    for (int i = 0; i < 7; ++i) {
+        if (mouseCoords[i].contains(event->pos())) {
+            buttonState = (-1);
+        }
+    }
+}
+
 void Widget::slotEnableSound(bool aSound)
 {
+#ifdef _DEBUG
+    qDebug() << "Sound" << aSound;
+#endif
     sound = aSound;
 }
 
@@ -407,6 +543,7 @@ void Widget::drawGameFrame()
     case MainScreen: {
         drawAll(painter);
         drawKeyHints(painter);
+        drawButtons(painter);
         break;
     }
     case TheGame: {
@@ -429,6 +566,9 @@ void Widget::drawGameFrame()
         // Draw 90 + score
         drawDigitPairs(90, 0, painter);
         drawDigitPairs(score, 1, painter);
+
+        // Draw buttons
+        drawButtons(painter);
         break;
     }
     case TheWon: {
@@ -437,11 +577,13 @@ void Widget::drawGameFrame()
     }
     case GameOver: {
         drawAll(painter);
-        drawGameText(255, 34, strGameOver, painter);
+        drawGameText(strGameOver, painter);
+        drawButtons(painter);
         break;
     }
     case Pause: {
-        drawGameText(280, 34, strPause, painter);
+        drawGameText(strPause, painter);
+        drawButtons(painter);
         break;
     }
     default:
@@ -500,22 +642,38 @@ void Widget::drawAll(QPainter &painter)
     // Draw 88 + 88
     drawDigitPairs(88, 0, painter);
     drawDigitPairs(88, 1, painter);
+
+    // Draw Dendy
+    for (int i = 0; i < 2; ++i) {
+        painter.drawPixmap(dendyCoords[i], pixDendy[i]);
+    }
+
+    // Draw all buttons
+//    for (int i = 0; i < 7; ++i) {
+//        painter.drawPixmap(buttonCoords[i], pixButtons[i]);
+//    }
 }
 
 void Widget::drawKeyHints(QPainter &painter)
 {
     QColor colorBlack(0, 0, 0);
-    QColor colorRed(255, 0, 0);
+    QColor colorOrange(255, 140, 0);
 
     QFont fontBig = painter.font();
     fontBig.setPixelSize(30);
     fontBig.setBold(true);
+
+    QFont fontSmall = painter.font();
+    fontSmall.setPixelSize(14);
+    fontSmall.setBold(true);
+
     painter.setFont(fontBig);
+
     QPoint coords[6];
     for (int i = 0; i < 2; ++i) {
         int offset;
         if (i % 2 == 0) {
-            painter.setPen(colorRed);
+            painter.setPen(colorOrange);
             offset = 0;
         } else {
             painter.setPen(colorBlack);
@@ -530,21 +688,24 @@ void Widget::drawKeyHints(QPainter &painter)
         for (int k = 0; k < 4; ++k) {
             painter.drawText(coords[k], keys[k]);
         }
-        //painter.drawText(coords[5], strPressKey);
-        fontBig.setPixelSize(14);
-        painter.setFont(fontBig);
+
+        painter.setFont(fontSmall);
+
         painter.drawText(coords[4], strPause);
-        fontBig.setPixelSize(30);
+        painter.drawText(coords[5], tr("F5"));
+
         painter.setFont(fontBig);
     }
 
-    drawGameText(coords[5].x(), coords[5].y(), strPressKey, painter);
+    drawGameText(strPressKey, painter);
 }
 
-void Widget::drawGameText(const int aX, const int aY, const QString &aStr, QPainter &painter)
+void Widget::drawGameText(const QString &aStr, QPainter &painter)
 {
     QColor colorBlack(0, 0, 0);
-    QColor colorRed(255, 0, 0);
+    QColor colorRed(255, 255, 255);
+
+    int f_offset = 30;
 
     QFont fontBig = painter.font();
     fontBig.setPixelSize(20);
@@ -561,7 +722,15 @@ void Widget::drawGameText(const int aX, const int aY, const QString &aStr, QPain
             offset = 1;
         }
 
-        painter.drawText(aX + offset, aY + offset, aStr);
+        painter.drawText(0, 0, screen_w, painter.font().pixelSize() + f_offset + offset,
+                         Qt::AlignHCenter | Qt::AlignVCenter, aStr);
+    }
+}
+
+void Widget::drawButtons(QPainter &painter)
+{
+    if (buttonState != (-1)) {
+        painter.drawPixmap(buttonCoords[buttonState], pixButtons[buttonState]);
     }
 }
 
@@ -625,6 +794,152 @@ QPoint Widget::getCanCoords() const
     return (canState != (-1)) ? cansCoords[sideState][canState] : QPoint(0, 0);
 }
 
+bool Widget::checkAllGfxRes()
+{
+    gfxFiles = getAllGfxFiles();
+
+    dirName = qApp->applicationDirPath() + "/gfx/";
+    QFileInfo dirInfo(dirName);
+
+    if (!dirInfo.isDir() && !dirInfo.isReadable()) {
+        return false;
+    } else {
+        gfxFiles = updateGfxListFiles(dirName);
+        QString fileName;
+        foreach (fileName, gfxFiles) {
+            QFileInfo fileInfo(fileName);
+            if (!fileInfo.isFile() && !fileInfo.isReadable()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Widget::checkAllSfxRes()
+{
+    sfxFiles = getAllSfxFiles();
+
+    dirName = qApp->applicationDirPath() + "/sfx/";
+    QFileInfo dirInfo(dirName);
+    QStringList filesList;
+    if (!dirInfo.isDir() && !dirInfo.isReadable()) {
+        return false;
+    } else {
+        QString fileName;
+        foreach (fileName, sfxFiles) {
+            filesList << dirName + fileName;
+        }
+
+        foreach (fileName, filesList) {
+            QFileInfo fileInfo(fileName);
+            if (!fileInfo.isFile() && !fileInfo.isReadable()) {
+                return false;
+            }
+        }
+    }
+    sfxFiles = filesList;
+    return true;
+}
+
+QStringList Widget::getAllSfxFiles() const
+{
+    QStringList sfxFiles;
+    sfxFiles << "Got.wav" << "Move.wav"
+             << "Start.wav" << "Miss.wav"
+             << "Gameover.wav" << "Win.wav";
+    return sfxFiles;
+}
+
+void Widget::loadAllSfx()
+{
+    s_got = new QSound(sfxFiles[0], this);
+    s_move = new QSound(sfxFiles[1], this);
+    s_start = new QSound(sfxFiles[2], this);
+    s_miss = new QSound(sfxFiles[3], this);
+    s_gameOver = new QSound(sfxFiles[4], this);
+    s_Win = new QSound(sfxFiles[5], this);
+}
+
+QStringList Widget::getAllGfxFiles() const
+{
+    QStringList listOfGfxFiles;
+
+    listOfGfxFiles << "background.png";
+
+    for (int i = 0; i < 8; ++i) {
+        listOfGfxFiles << QString("can_%1.png").arg(i);
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        listOfGfxFiles << QString("chief_%1.png").arg(i);
+    }
+
+    for (int i = 0; i < 2; ++i) {
+        listOfGfxFiles << QString("broken_%1.png").arg(i);
+    }
+
+    for (int i = 0; i < 2; ++i) {
+        listOfGfxFiles << QString("dendy_%1.png").arg(i);
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        listOfGfxFiles << QString("digit_%1.png").arg(i);
+    }
+
+    for (int i = 0; i < 7; ++i) {
+        listOfGfxFiles << QString("button_%1.png").arg(i);
+    }
+
+    listOfGfxFiles << "chair.png";
+    listOfGfxFiles << "bsod.png";
+
+    return listOfGfxFiles;
+}
+
+QStringList Widget::updateGfxListFiles(const QString &dirName)
+{
+    QString fileName;
+    QStringList filesList;
+    gfxFiles = getAllGfxFiles();
+    foreach (fileName, gfxFiles) {
+        filesList << dirName + fileName;
+    }
+    return filesList;
+}
+
+void Widget::loadAllGfx()
+{
+    pixBackground.load(gfxFiles[0]); // Load background
+
+    for (int i = 1; i < 9; ++i) { // 8 is count of frames of cans
+        pixCans[i - 1].load(gfxFiles[i]);
+    }
+
+    for (int i = 9; i < 13; ++i) { // 4 state of chief
+        pixChiefs[i - 9].load(gfxFiles[i]);
+    }
+
+    for (int i = 13; i < 15; ++i) { // 2 state of broken pepsi can
+        pixBroken[i - 13].load(gfxFiles[i]);
+    }
+
+    for (int i = 15; i < 17; ++i) { // 2 state of dendy
+        pixDendy[i - 15].load(gfxFiles[i]);
+    }
+
+    for (int i = 17; i < 27; ++i) { // 10 LCD digits
+        pixDigits[i - 17].load(gfxFiles[i]);
+    }
+
+    for (int i = 27; i < 34; ++i) { // 7 pushed buttons
+        pixButtons[i - 27].load(gfxFiles[i]);
+    }
+
+    pixChair.load(gfxFiles[34]); // Load chair
+
+    pixWonScreen.load(gfxFiles[35]); // Load won screen*/
+}
 
 Widget::~Widget()
 {

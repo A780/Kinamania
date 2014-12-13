@@ -30,5 +30,14 @@
         <file>gfx/icon.png</file>
         <file>l10n/chervemania_en.qm</file>
         <file>l10n/chervemania_ru.qm</file>
+        <file>gfx/dendy_0.png</file>
+        <file>gfx/dendy_1.png</file>
+        <file>gfx/button_0.png</file>
+        <file>gfx/button_1.png</file>
+        <file>gfx/button_2.png</file>
+        <file>gfx/button_3.png</file>
+        <file>gfx/button_4.png</file>
+        <file>gfx/button_5.png</file>
+        <file>gfx/button_6.png</file>
     </qresource>
 </RCC>

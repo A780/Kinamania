@@ -1,8 +1,14 @@
 v. 0.2 (12/13/2014)
 
     * Fix playing Game Over sound;
-    * Add 1500 ms delay after Game Over or winning the game;
-
+    * Add 2000 ms keys delay after Game Over or winning the game;
+    * Add Dendy logo on screen;
+    * Fix and centering draw game text;
+    * Add mouse control;
+    * Rewrite sfx and gfx custom loader;
+    * Add buttons pushing animation;
+    * Add playing sound after winning the game;
+    * Add custom skills array;
 
 v. 0.1 (12/12/2014)
 

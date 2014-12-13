@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->action_New_Game, SIGNAL(triggered()), ui->centralWidget, SLOT(slotStartNewGame()));
     connect(ui->action_Reset, SIGNAL(triggered()), ui->centralWidget, SLOT(slotReset()));
     connect(ui->action_Sound, SIGNAL(triggered(bool)), ui->centralWidget, SLOT(slotEnableSound(bool)));
+    connect(ui->centralWidget, SIGNAL(disableSound()), this, SLOT(slotDisableSoundMenu()));
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -40,6 +41,12 @@ void MainWindow::slotShowAbout()
                                                          "Source code is available on <a href=\"https://github.com/A780/CherveMania\">GitHub</a>.<br>"
                                                          "<p><center><b>Big thanks for Help, /fag!</b></center></p>"
                                                          "<p><center><b>Anonymous artist and A780A, December 2014</b></center></p>"));
+}
+
+void MainWindow::slotDisableSoundMenu()
+{
+    ui->action_Sound->setChecked(false);
+    ui->action_Sound->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
