@@ -176,13 +176,13 @@ int Widget::getScaleLevel() const
 {
     int scale = 1;
 
-    if ((screen_w >= 320 && screen_h <= 640) ||
-            (screen_h >= 240 && screen_h <= 399)) {
+    if ((screen_w >= 320 && screen_h <= 680) ||
+            (screen_h >= 240 && screen_h <= 420)) {
         scale = 1;
     }
 
-    if ((screen_w > 640 && screen_h <= 1280) ||
-            (screen_h > 399 && screen_h <= 798)) {
+    if ((screen_w > 680 && screen_h <= 1280) ||
+            (screen_h > 420 && screen_h <= 798)) {
         scale = 2;
     }
 
