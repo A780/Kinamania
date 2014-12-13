@@ -12,7 +12,7 @@ TARGET = Kinamania
 TEMPLATE = app
 
 QMAKE_CXXFLAGS_DEBUG += -D_DEBUG
-#QMAKE_CXXFLAGS_RELEASE += -D_DEBUG
+QMAKE_CXXFLAGS_RELEASE += -D_DEBUG
 
 SOURCES +=  main.cpp \
             mainwindow.cpp \
@@ -33,4 +33,5 @@ TRANSLATIONS += l10n/kinamania_ru.ts \
 
 OTHER_FILES +=  ReadMe.md \
                 ChangeLog.txt \
+                Description.txt \
                 kinamania.rc

@@ -467,30 +467,35 @@ void Widget::keyPressEvent(QKeyEvent *event)
 
     switch (event->key()) {
     case Qt::Key_Q:
-    case Qt::Key_7: {
+    case Qt::Key_7:
+    case 0x419: { // Q in Russian
         chiefState = buttonState = 0;
         break;
     }
     case Qt::Key_P:
-    case Qt::Key_9: {
+    case Qt::Key_9:
+    case 0x417: { // P in Russian
         chiefState = 1;
         buttonState = 2;
         break;
     }
     case Qt::Key_A:
-    case Qt::Key_1: {
+    case Qt::Key_1:
+    case 0x424: { // A in Russian
         chiefState = 2;
         buttonState = 1;
         break;
     }
     case Qt::Key_L:
-    case Qt::Key_3: {
+    case Qt::Key_3:
+    case 0x414: { // L in Russian
         chiefState = 3;
         buttonState = 3;
         break;
     }
     case Qt::Key_Pause:
-    case Qt::Key_G: {
+    case Qt::Key_G:
+    case 0x41F: { // G in Russian
         buttonState = 6;
         if (!state) {
             pauseGame(currentGameState != Pause);
@@ -513,6 +518,11 @@ void Widget::keyPressEvent(QKeyEvent *event)
 void Widget::keyReleaseEvent(QKeyEvent *event)
 {
     switch (event->key()) {
+    case 0x419:
+    case 0x417:
+    case 0x424:
+    case 0x414:
+    case 0x41F:
     case Qt::Key_Q:
     case Qt::Key_7:
     case Qt::Key_P:
