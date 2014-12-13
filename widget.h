@@ -33,6 +33,9 @@ private:
     bool sound;
     int soundDelay;
 
+    int keysDelay;
+    bool keysAvailable;
+
     QChar keys[4];
     QString strPause;
     QString strPressKey;

@@ -1,6 +1,7 @@
 v. 0.2 (12/13/2014)
 
     * Fix playing Game Over sound;
+    * Add 1500 ms delay after Game Over or winning the game;
 
 
 v. 0.1 (12/12/2014)

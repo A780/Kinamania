@@ -22,6 +22,9 @@ Widget::Widget(QWidget *parent)
     sound = true;
     soundDelay = 75;
 
+    keysDelay = 150;
+    keysAvailable = false;
+
     currentGameState = MainScreen;
 
     pixBackground.load(":/gfx/background.png"); // Load background
@@ -185,12 +188,14 @@ void Widget::refreshDelay()
 
 void Widget::resetAllVariables()
 {
-    score = 0;
+
     msec = sideState = 0;
     canState = (-1);
     chiefState = 0;
-    lives = 0;
-//    lives = 3;
+//    score = 98;
+    score = 0;
+//    lives = 0;
+    lives = 3;
     delay = 100;
     gotIt = 0;
 }
@@ -206,6 +211,10 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 {
     int num = qrand() % 16;
     ++msec;
+
+    if (msec == keysDelay && (currentGameState == GameOver || currentGameState == TheWon)) {
+        keysAvailable = true;
+    }
 
     if (msec == soundDelay && currentGameState == MainScreen) {
         if (sound && s_start->isFinished()) {
@@ -302,11 +311,14 @@ void Widget::keyPressEvent(QKeyEvent *event)
     qDebug() << "Key Pressed:" << event->key();
 #endif
 
-    bool state = currentGameState == MainScreen
-            || currentGameState == GameOver
-            || currentGameState == TheWon;
+    if (currentGameState == MainScreen) {
+        currentGameState = TheGame;
+    }
+
+    bool state = keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
 
     if (state) {
+        keysAvailable = false;
         currentGameState = TheGame;
     }
 
