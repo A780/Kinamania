@@ -182,12 +182,12 @@ int Widget::getScaleLevel() const
     }
 
     if ((screen_w > 640 && screen_h <= 1280) ||
-        (screen_h > 399 && screen_h <= 798)) {
+            (screen_h > 399 && screen_h <= 798)) {
         scale = 2;
     }
 
     if ((screen_w > 1280 && screen_h <= 2560) ||
-        (screen_h > 798 && screen_h <= 1197)) {
+            (screen_h > 798 && screen_h <= 1197)) {
         scale = 3;
     }
 
@@ -273,10 +273,10 @@ void Widget::resetAllVariables()
     chiefState = 0;
     dendyState = (-1);
     dendyDelay = 0;
+    //    score = 98;
     score = 0;
-    //    score = 0;
-    lives = 0;
-    //    lives = 3;
+    //    lives = 6;
+    lives = 3;
     delay = 100;
     gotIt = 0;
 }
@@ -344,7 +344,7 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
         if (dendyState == (-1)) {
             if (dendy >= 20 && dendy < 25) {
-            //if (1) {
+                //if (1) {
                 if (!(dendyDelay > 0)) {
                     dendyDelay = 4;
                 }

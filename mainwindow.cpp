@@ -70,8 +70,6 @@ void MainWindow::slotSetOriginalScreenSize()
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << event->size().width() << event->size().height() - ui->menuBar->height()
-             << 640.0f / event->size().width() << 399.0f / (event->size().height() - ui->menuBar->height());
     emit setPixmapSize(event->size().width(), event->size().height() - ui->menuBar->height());
 }
 

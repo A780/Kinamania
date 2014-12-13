@@ -1,3 +1,8 @@
+TODO:
+    * Add Game B Mode;
+    * Add config with coordinats;
+    * Add animation at the end of the game.
+
 v. 0.2 (12/13/2014)
 
     * Fix playing Game Over sound;
@@ -16,6 +21,7 @@ v. 0.2 (12/13/2014)
     * Fix crash on stopAllSfx() func;
     * Rewrite about dialog;
     * Refresh translations and add link on teaser of Kinamania game;
+    * Add cool winning sound.
 
 v. 0.1 (12/12/2014)
 
