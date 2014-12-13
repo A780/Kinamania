@@ -1,0 +1,8 @@
+v. 0.2 (12/13/2014)
+
+    * Fix playing Game Over sound;
+
+
+v. 0.1 (12/12/2014)
+
+    * First public release.

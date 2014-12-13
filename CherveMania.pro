@@ -32,4 +32,5 @@ TRANSLATIONS += l10n/chervemania_ru.ts \
                 l10n/chervemania_en.ts
 
 OTHER_FILES +=  ReadMe.md \
+                ChangeLog.txt \
                 chervemania.rc

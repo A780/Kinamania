@@ -20,6 +20,7 @@ Widget::Widget(QWidget *parent)
     resetAllVariables();
 
     sound = true;
+    soundDelay = 75;
 
     currentGameState = MainScreen;
 
@@ -188,7 +189,8 @@ void Widget::resetAllVariables()
     msec = sideState = 0;
     canState = (-1);
     chiefState = 0;
-    lives = 3;
+    lives = 0;
+//    lives = 3;
     delay = 100;
     gotIt = 0;
 }
@@ -205,9 +207,21 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     int num = qrand() % 16;
     ++msec;
 
-    if (msec == 75 && currentGameState == MainScreen) {
+    if (msec == soundDelay && currentGameState == MainScreen) {
         if (sound && s_start->isFinished()) {
             s_start->play();
+        }
+    }
+
+    if (msec == soundDelay && currentGameState == GameOver) { // Fix bug with laggy playing this sound
+        //for (int i = 0; i < 50; ++i) {
+            stopAllSfx();
+        //}
+        if (sound && s_gameOver->isFinished()) {
+#ifdef _DEBUG
+            qDebug() << "############### Is playing?";
+#endif
+            s_gameOver->play();
         }
     }
 
@@ -269,18 +283,6 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         if (score >= 100) {
             currentGameState = TheWon;
             resetAllVariables();
-        }
-
-        if (currentGameState == GameOver) { // Fix bug with laggy playing this sound
-            for (int i = 0; i < 50; ++i) {
-                stopAllSfx();
-            }
-            if (sound && s_gameOver->isFinished()) {
-#ifdef _DEBUG
-                qDebug() << "############### Is playing?";
-#endif
-                s_gameOver->play();
-            }
         }
 
 #ifdef _DEBUG

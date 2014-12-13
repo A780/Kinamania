@@ -31,6 +31,7 @@ private:
     int chiefState;
 
     bool sound;
+    int soundDelay;
 
     QChar keys[4];
     QString strPause;
