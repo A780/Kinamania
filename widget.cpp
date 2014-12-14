@@ -433,12 +433,14 @@ void Widget::resetAllVariables()
     chiefState = 0;
     dendyState = (-1);
     dendyDelay = 0;
+    brokenDelay = 0;
+    brokenState = (-1);
     //    score = 98;
     score = 0;
     //    lives = 6;
     lives = 3;
     delay = 100;
-    gotIt = 0;
+//    gotIt = 0;
 }
 
 void Widget::paintEvent(QPaintEvent */*event*/)
@@ -508,104 +510,112 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     if (msec >= delay && currentGameState == TheGame) { // 100 is one sec
         msec = 0;
 
-        if (dendyState == (-1)) {
-            if (dendy >= 20 && dendy < 25) {
-                //if (1) {
-                if (!(dendyDelay > 0)) {
-                    dendyDelay = 4;
+        if (brokenDelay) {
+            --brokenDelay;
+        } else {
+            if (dendyState == (-1)) {
+                if (dendy >= 20 && dendy < 25) {
+                    //if (1) {
+                    if (!(dendyDelay > 0)) {
+                        dendyDelay = 4;
+                    }
                 }
             }
-        }
 
-        if (dendyDelay >= 0) {
-            --dendyDelay;
-        }
+            if (dendyDelay >= 0) {
+                --dendyDelay;
+            }
 
-        if (dendyDelay <= 0 && dendyState != (-1)) {
-            dendyState = (-1);
-        }
+            if (dendyDelay <= 0 && dendyState != (-1)) {
+                dendyState = (-1);
+            }
 
 #ifdef _DEBUG
-        qDebug() << "############### Dendy" << dendyDelay << dendyState << dendy;
+            qDebug() << "############### Dendy" << dendyDelay << dendyState << dendy;
 #endif
 
-        switch (dendyDelay) {
-        case 3:
-        case 2: {
-            dendyState = 0;
-            break;
-        }
-        case 1:
-        case 0: {
-            dendyState = 1;
-            break;
-        }
-        default:
-            break;
-        }
-
-        if (canState == (-1)) {
-
-            if (num >= 0 && num < 4) {
-                sideState = 0;
+            switch (dendyDelay) {
+            case 3:
+            case 2: {
+                dendyState = 0;
+                break;
+            }
+            case 1:
+            case 0: {
+                dendyState = 1;
+                break;
+            }
+            default:
+                break;
             }
 
-            if (num >= 4 && num < 8) {
-                sideState = 1;
+            if (canState == (-1)) {
+
+                if (num >= 0 && num < 4) {
+                    sideState = 0;
+                }
+
+                if (num >= 4 && num < 8) {
+                    sideState = 1;
+                }
+
+                if (num >= 8 && num < 12) {
+                    sideState = 2;
+                }
+
+                if (num >= 12 && num < 16) {
+                    sideState = 3;
+                }
             }
 
-            if (num >= 8 && num < 12) {
-                sideState = 2;
-            }
+            ++canState;
 
-            if (num >= 12 && num < 16) {
-                sideState = 3;
-            }
-        }
-
-        ++canState;
-
-        if (canState == 4 && sideState == chiefState) {
-            ++score;
-            if (sound && s_got->isFinished()) {
-                s_got->play();
-            }
+            if (canState == 4 && sideState == chiefState) {
+                ++score;
+                if (sound && s_got->isFinished()) {
+                    s_got->play();
+                }
 #ifdef _DEBUG
-            qDebug() << "You won! Can is:" << score;
+                qDebug() << "You won! Can is:" << score;
 #endif
-        } else if (canState == 4 && sideState != chiefState && dendyState == (-1)) {
-            --lives;
-            if (sound && s_miss->isFinished()) {
-                s_miss->play();
-            }
+            } else if (canState == 4 && sideState != chiefState && dendyState == (-1)) {
+                --lives;
+
+                brokenState = sideState;
+                //gotIt = 1;
+                brokenDelay = 4;
+
+                if (sound && s_miss->isFinished()) {
+                    s_miss->play();
+                }
 #ifdef _DEBUG
-            qDebug() << "You Lose! Lives:" << lives;
+                qDebug() << "You Lose! Lives:" << lives;
 #endif
-            if (lives < 0) {
-                currentGameState = GameOver;
+                if (lives < 0) {
+                    currentGameState = GameOver;
+                    resetAllVariables();
+                }
+            } else {
+                if (sound && s_move->isFinished()) {
+                    s_move->play();
+                }
+            }
+
+            if (canState >= 4) {
+                canState = (-1);
+            }
+
+            if (score >= 100) {
+                currentGameState = TheWon;
                 resetAllVariables();
             }
-        } else {
-            if (sound && s_move->isFinished()) {
-                s_move->play();
-            }
-        }
-
-        if (canState >= 4) {
-            canState = (-1);
-            gotIt = 1;
-        }
-
-        if (score >= 100) {
-            currentGameState = TheWon;
-            resetAllVariables();
-        }
 
 #ifdef _DEBUG
-        qDebug() << canState << sideState << chiefState << delay;
+            qDebug() << canState << sideState << chiefState << delay;
 #endif
 
-        refreshDelay();
+            refreshDelay();
+        }
     }
 
     drawGameFrame();
@@ -629,7 +639,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
         currentGameState = TheGame;
     }
 
-    gotIt = 0;
+    //gotIt = 0;
 
     switch (event->key()) {
     case Qt::Key_Q:
@@ -727,7 +737,7 @@ void Widget::mousePressEvent(QMouseEvent *event)
         currentGameState = TheGame;
     }
 
-    gotIt = 0;
+    //gotIt = 0;
 
     if (mouseCoords[0].contains(event->pos())) {
         chiefState = buttonState = 0;
@@ -825,9 +835,9 @@ void Widget::drawGameFrame()
         // Draw pepsi cans
         if (canState != (-1)) {
             painter.drawPixmap(getCanCoords(), getCanPixmap());
-        } else if (gotIt && sideState != chiefState) {
-            painter.drawPixmap((sideState % 2 == 0) ? brokenCoords[0] : brokenCoords[1],
-                    (sideState % 2 == 0) ? pixBroken[0] : pixBroken[1]);
+        } else if (brokenDelay && brokenState != (-1)) {
+            painter.drawPixmap((brokenState % 2 == 0) ? brokenCoords[0] : brokenCoords[1],
+                    (brokenState % 2 == 0) ? pixBroken[0] : pixBroken[1]);
         }
 
         // Draw chief

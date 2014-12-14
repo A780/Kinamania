@@ -43,7 +43,7 @@ private:
     int score;
     int lives;
     int delay;
-    int gotIt;
+    //int gotIt;
 
     int sideState;
     int canState;
@@ -56,6 +56,8 @@ private:
     int soundDelay;
 
     int dendyDelay;
+    int brokenDelay;
+    int brokenState;
 
     int keysDelay;
     bool keysAvailable;

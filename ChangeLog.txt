@@ -1,6 +1,5 @@
 TODO:
     * Add Game B Mode;
-    * Add config with coordinats;
     * Add animation at the end of the game.
 
 v. 0.3 (12/14/2014)
@@ -11,6 +10,8 @@ v. 0.3 (12/14/2014)
     * Optimize updateMouseCoord() func;
     * Fix bug whith drawing second cans on left side;
     * Fix text position;
+    * Fix some delays;
+    * Add a slight pause after the broken cans;
 
 v. 0.2 (12/13/2014)
 
