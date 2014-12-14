@@ -16,6 +16,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public:
+    void setCanvasSize(int aWidth, int aHeight);
+
+private:
+    int canvas_w;
+    int canvas_h;
+
 protected:
     void changeEvent(QEvent *e);
 

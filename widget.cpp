@@ -13,6 +13,7 @@
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent),
+      canvas_w(640), canvas_h(399),
       screen_w(640), screen_h(399)
 {
     sound = true;
@@ -20,6 +21,23 @@ Widget::Widget(QWidget *parent)
 
     keysDelay = 200;
     keysAvailable = false;
+
+    drawRects = false;
+
+    iniFileName = qApp->applicationDirPath() + "/Kinamania.ini";
+    if (checkIniFile(iniFileName)) {
+        iniSettings = new QSettings(iniFileName, QSettings::IniFormat);
+        configAvailable = true;
+    } else {
+        configAvailable = false;
+    }
+
+    if (configAvailable) {
+        iniSettings->beginGroup("Canvas");
+        canvas_w = screen_w = iniSettings->value("Width").toInt();
+        canvas_h = screen_h = iniSettings->value("Height").toInt();
+        iniSettings->endGroup();
+    }
 
     // Check gfx and sfx dirs
     gfxDirAndFilesAvailable = checkAllGfxRes();
@@ -30,7 +48,8 @@ Widget::Widget(QWidget *parent)
     }
 
 #ifdef _DEBUG
-    qDebug() << "Using" << dirName << "directory." << sfxDirAndFilesAvailable;
+    qDebug() << "Using" << dirName << "directory."
+             << sfxDirAndFilesAvailable << configAvailable;
     QString test;
     foreach (test, sfxFiles) {
         qDebug() << test;
@@ -38,6 +57,9 @@ Widget::Widget(QWidget *parent)
 #endif
 
     initAll();
+
+    //iniSettings = new QSettings(iniFileName, QSettings::IniFormat);
+    //writeConfig();
 
     resetAllVariables();
 
@@ -75,102 +97,217 @@ void Widget::initAll()
 
     initHintsCoords();
 
+    initMouseCoordsParts();
+
     initLevels();
+
+    if (configAvailable) {
+        iniSettings->beginGroup("Rectangles");
+        drawRects = iniSettings->value("Draw").toBool();
+        iniSettings->endGroup();
+    }
 
     initStrings();
 }
 
 void Widget::initCansCoords()
 {
-    cansCoords[0][0] = QPoint(157, 139);
-    cansCoords[0][1] = QPoint(177, 145);
-    cansCoords[0][2] = QPoint(201, 163);
-    cansCoords[0][3] = QPoint(227, 181);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load CanCoords from ini config.";
+#endif
+        iniSettings->beginGroup("CanCoords");
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                cansCoords[i][j] = iniSettings->value(QString("Can_%1_%2").arg(i).arg(j)).toPoint();
+            }
+        }
+        iniSettings->endGroup();
+    } else {
+        cansCoords[0][0] = QPoint(157, 139);
+        cansCoords[0][1] = QPoint(177, 145);
+        cansCoords[0][2] = QPoint(201, 163);
+        cansCoords[0][3] = QPoint(227, 181);
 
-    cansCoords[1][0] = QPoint(469, 139);
-    cansCoords[1][1] = QPoint(435, 146);
-    cansCoords[1][2] = QPoint(414, 163);
-    cansCoords[1][3] = QPoint(390, 181);
+        cansCoords[1][0] = QPoint(469, 139);
+        cansCoords[1][1] = QPoint(435, 146);
+        cansCoords[1][2] = QPoint(414, 163);
+        cansCoords[1][3] = QPoint(390, 181);
 
-    cansCoords[2][0] = QPoint(157, 223);
-    cansCoords[2][1] = QPoint(178, 229);
-    cansCoords[2][2] = QPoint(201, 248);
-    cansCoords[2][3] = QPoint(227, 265);
+        cansCoords[2][0] = QPoint(157, 223);
+        cansCoords[2][1] = QPoint(178, 229);
+        cansCoords[2][2] = QPoint(201, 248);
+        cansCoords[2][3] = QPoint(227, 265);
 
-    cansCoords[3][0] = QPoint(469, 224);
-    cansCoords[3][1] = QPoint(435, 231);
-    cansCoords[3][2] = QPoint(413, 248);
-    cansCoords[3][3] = QPoint(390, 266);
+        cansCoords[3][0] = QPoint(469, 224);
+        cansCoords[3][1] = QPoint(435, 231);
+        cansCoords[3][2] = QPoint(413, 248);
+        cansCoords[3][3] = QPoint(390, 266);
+    }
 }
 
 void Widget::initChairCoords()
 {
-    chairCoords[0] = QPoint(398, 121);
-    chairCoords[1] = QPoint(384, 121);
-    chairCoords[2] = QPoint(369, 121);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load LiveCoords from ini config.";
+#endif
+        iniSettings->beginGroup("LiveCoords");
+        for (int i = 0; i < 3; ++i) {
+            chairCoords[i] = iniSettings->value(QString("Live_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        chairCoords[0] = QPoint(398, 121);
+        chairCoords[1] = QPoint(384, 121);
+        chairCoords[2] = QPoint(369, 121);
+    }
 }
 
 void Widget::initChiefCoords()
 {
-    chiefCoords[0] = QPoint(252, 151);
-    chiefCoords[1] = QPoint(318, 151);
-    chiefCoords[2] = QPoint(250, 226);
-    chiefCoords[3] = QPoint(326, 227);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load ChiefCoords from ini config.";
+#endif
+        iniSettings->beginGroup("ChiefCoords");
+        for (int i = 0; i < 4; ++i) {
+            chiefCoords[i] = iniSettings->value(QString("Chief_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        chiefCoords[0] = QPoint(252, 151);
+        chiefCoords[1] = QPoint(318, 151);
+        chiefCoords[2] = QPoint(250, 226);
+        chiefCoords[3] = QPoint(326, 227);
+    }
 }
 
 void Widget::initBrokenCoords()
 {
-    brokenCoords[0] = QPoint(219, 286);
-    brokenCoords[1] = QPoint(382, 286);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load BrokenCoords from ini config.";
+#endif
+        iniSettings->beginGroup("BrokenCoords");
+        for (int i = 0; i < 2; ++i) {
+            brokenCoords[i] = iniSettings->value(QString("Broken_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        brokenCoords[0] = QPoint(219, 286);
+        brokenCoords[1] = QPoint(382, 286);
+    }
 }
 
 void Widget::initDigitCoords()
 {
-    digitCoords[0] = QPoint(330, 86);
-    digitCoords[1] = QPoint(351, 86);
-    digitCoords[2] = QPoint(383, 86);
-    digitCoords[3] = QPoint(404, 86);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load DigitCoords from ini config.";
+#endif
+        iniSettings->beginGroup("DigitCoords");
+        for (int i = 0; i < 4; ++i) {
+            digitCoords[i] = iniSettings->value(QString("Digit_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        digitCoords[0] = QPoint(330, 86);
+        digitCoords[1] = QPoint(351, 86);
+        digitCoords[2] = QPoint(383, 86);
+        digitCoords[3] = QPoint(404, 86);
+    }
 }
 
 void Widget::initDendyCoords()
 {
-    dendyCoords[0] = dendyCoords[1] = QPoint(212, 84);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load DendyCoords from ini config.";
+#endif
+        iniSettings->beginGroup("DendyCoords");
+        for (int i = 0; i < 2; ++i) {
+            dendyCoords[i] = iniSettings->value(QString("Dendy_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        dendyCoords[0] = QPoint(212, 84);
+        dendyCoords[1] = QPoint(212, 84);
+    }
 }
 
 void Widget::initButtonsCoords()
 {
-    buttonCoords[0] = QPoint(43, 245);
-    buttonCoords[1] = QPoint(43, 311);
-    buttonCoords[2] = QPoint(538, 246);
-    buttonCoords[3] = QPoint(537, 313);
-    buttonCoords[4] = QPoint(556, 33);
-    buttonCoords[5] = QPoint(552, 73);
-    buttonCoords[6] = QPoint(553, 115);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load ButtonsCoords from ini config.";
+#endif
+        iniSettings->beginGroup("ButtonsCoords");
+        for (int i = 0; i < 7; ++i) {
+            buttonCoords[i] = iniSettings->value(QString("Button_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        buttonCoords[0] = QPoint(43, 245);
+        buttonCoords[1] = QPoint(43, 311);
+        buttonCoords[2] = QPoint(538, 246);
+        buttonCoords[3] = QPoint(537, 313);
+        buttonCoords[4] = QPoint(556, 33);
+        buttonCoords[5] = QPoint(552, 73);
+        buttonCoords[6] = QPoint(553, 115);
+    }
 }
 
 void Widget::initMouseCoords()
 {
-    mouseCoords[0] = QRect(QPoint(43, 245), QPoint(43, 245) + QPoint(62, 63));
-    mouseCoords[1] = QRect(QPoint(43, 311), QPoint(43, 311) + QPoint(62, 60));
-    mouseCoords[2] = QRect(QPoint(538, 246), QPoint(538, 246) + QPoint(58, 60));
-    mouseCoords[3] = QRect(QPoint(537, 313), QPoint(537, 313) + QPoint(57, 56));
-    mouseCoords[4] = QRect(QPoint(556, 33), QPoint(556, 33) + QPoint(42, 29));
-    mouseCoords[5] = QRect(QPoint(552, 73), QPoint(552, 73) + QPoint(50, 31));
-    mouseCoords[6] = QRect(QPoint(553, 115), QPoint(553, 115) + QPoint(47, 29));
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load MouseCoords from ini config.";
+#endif
+        iniSettings->beginGroup("MouseCoords");
+        for (int i = 0; i < 7; ++i) {
+            mouseCoordsAdd[i] = iniSettings->value(QString("Mouse_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        mouseCoordsAdd[0] = QPoint(62, 63);
+        mouseCoordsAdd[1] = QPoint(62, 60);
+        mouseCoordsAdd[2] = QPoint(58, 60);
+        mouseCoordsAdd[3] = QPoint(57, 56);
+        mouseCoordsAdd[4] = QPoint(42, 29);
+        mouseCoordsAdd[5] = QPoint(50, 31);
+        mouseCoordsAdd[6] = QPoint(47, 29);
+    }
+
+    for (int i = 0; i < 7; ++i) {
+        mouseCoords[i] = QRect(buttonCoords[i], buttonCoords[i] + mouseCoordsAdd[i]);
+    }
 }
 
 void Widget::updateMouserCoords()
 {
-    float x = 640.0f / screen_w;
-    float y = 399.0f / screen_h;
+    float x = (float) canvas_w / screen_w;
+    float y = (float) canvas_h / screen_h;
 
-    mouseCoords[0] = QRect(QPoint(43 / x, 245 / y), QPoint(43 / x, 245 / y) + QPoint(62 / x, 63 / y));
-    mouseCoords[1] = QRect(QPoint(43 / x, 311 / y), QPoint(43 / x, 311 / y) + QPoint(62 / x, 60 / y));
-    mouseCoords[2] = QRect(QPoint(538 / x, 246 / y), QPoint(538 / x, 246 / y) + QPoint(58 / x, 60 / y));
-    mouseCoords[3] = QRect(QPoint(537 / x, 313 / y), QPoint(537 / x, 313 / y) + QPoint(57 / x, 56 / y));
-    mouseCoords[4] = QRect(QPoint(556 / x, 33 / y), QPoint(556 / x, 33 / y) + QPoint(42 / x, 29 / y));
-    mouseCoords[5] = QRect(QPoint(552 / x, 73 / y), QPoint(552 / x, 73 / y) + QPoint(50 / x, 31 / y));
-    mouseCoords[6] = QRect(QPoint(553 / x, 115 / y), QPoint(553 / x, 115 / y) + QPoint(47 / x, 29 / y));
+#ifdef _DEBUG
+    qDebug() << screen_h << screen_w << x << y;
+#endif
+
+    for (int i = 0; i < 7; ++i) {
+        // Optimization
+        mouseCoords[i] = QRect(buttonCoords_x[i] / x, buttonCoords_y[i] / y,
+                               mouseCoordsAdd_x[i] / x, mouseCoordsAdd_y[i] / y);
+    }
+}
+
+void Widget::initMouseCoordsParts()
+{
+    for (int i = 0; i < 7; ++i) {
+        buttonCoords_x[i] = buttonCoords[i].x();
+        buttonCoords_y[i] = buttonCoords[i].y();
+        mouseCoordsAdd_x[i] = mouseCoordsAdd[i].x();
+        mouseCoordsAdd_y[i] = mouseCoordsAdd[i].y();
+    }
 }
 
 int Widget::getScaleLevel() const
@@ -197,24 +334,46 @@ int Widget::getScaleLevel() const
 
 void Widget::initLevels()
 {
-    levels[0] = 100;
-    levels[1] = 50;
-    levels[2] = 30;
-    levels[3] = 20;
-    levels[4] = 18;
-    levels[5] = 15;
-    levels[6] = 10;
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load Levels from ini config.";
+#endif
+        iniSettings->beginGroup("Levels");
+        for (int i = 0; i < 7; ++i) {
+            level[i] = iniSettings->value(QString("Level_%1").arg(i)).toInt();
+        }
+        iniSettings->endGroup();
+    } else {
+        level[0] = 100;
+        level[1] = 50;
+        level[2] = 30;
+        level[3] = 20;
+        level[4] = 18;
+        level[5] = 15;
+        level[6] = 10;
+    }
 }
 
 void Widget::initHintsCoords()
 {
-    hintsCoords[0] = QPoint(62, 288);
-    hintsCoords[1] = QPoint(62, 351);
-    hintsCoords[2] = QPoint(554, 288);
-    hintsCoords[3] = QPoint(554, 351);
-    hintsCoords[4] = QPoint(556, 135);
-    hintsCoords[5] = QPoint(569, 52);
-    hintsCoords[6] = QPoint(569, 94);
+    if (configAvailable) {
+#ifdef _DEBUG
+        qDebug() << "Load HintsCoords from ini config.";
+#endif
+        iniSettings->beginGroup("HintsCoords");
+        for (int i = 0; i < 7; ++i) {
+            hintsCoords[i] = iniSettings->value(QString("Hint_%1").arg(i)).toPoint();
+        }
+        iniSettings->endGroup();
+    } else {
+        hintsCoords[0] = QPoint(62, 288);
+        hintsCoords[1] = QPoint(62, 351);
+        hintsCoords[2] = QPoint(554, 288);
+        hintsCoords[3] = QPoint(554, 351);
+        hintsCoords[4] = QPoint(556, 135);
+        hintsCoords[5] = QPoint(569, 52);
+        hintsCoords[6] = QPoint(569, 94);
+    }
 }
 
 void Widget::initStrings()
@@ -238,31 +397,31 @@ void Widget::refreshDelay()
 #endif
 
     if (score >= 0 && score < 10) {
-        delay = levels[0] / getScaleLevel();
+        delay = level[0] / getScaleLevel();
     }
 
     if (score >= 10 && score < 15) {
-        delay = levels[1] / getScaleLevel();
+        delay = level[1] / getScaleLevel();
     }
 
     if (score >= 15 && score < 25) {
-        delay = levels[2] / getScaleLevel();
+        delay = level[2] / getScaleLevel();
     }
 
     if (score >= 25 && score < 50) {
-        delay = levels[3] / getScaleLevel();
+        delay = level[3] / getScaleLevel();
     }
 
     if (score >= 50 && score < 75) {
-        delay = levels[4] / getScaleLevel();
+        delay = level[4] / getScaleLevel();
     }
 
     if (score >= 75 && score < 95) {
-        delay = levels[5] / getScaleLevel();
+        delay = level[5] / getScaleLevel();
     }
 
     if (score >= 95 && score < 100) {
-        delay = levels[6] / getScaleLevel();
+        delay = level[6] / getScaleLevel();
     }
 }
 
@@ -286,15 +445,21 @@ void Widget::paintEvent(QPaintEvent */*event*/)
 {
     QPainter painter(this);
 
-    if (screen_w != 640 || screen_h != 399) {
+    if (screen_w != canvas_w || screen_h != canvas_h) {
+        //#ifdef _DEBUG
+        //    qDebug() << "!!!!!!!!!!!! Drawing SCALED pixmap!";
+        //#endif
         painter.drawPixmap(0, 0, pixSurface->scaled(screen_w, screen_h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     } else {
+        //#ifdef _DEBUG
+        //    qDebug() << "!!!!!!!!!!!! Drawing ORIGINAL pixmap!";
+        //#endif
         painter.drawPixmap(0, 0, *pixSurface);
     }
 
-#ifdef _DEBUG
-    drawRectangles(painter);
-#endif
+    if (drawRects) {
+        drawRectangles(painter);
+    }
 }
 
 void Widget::timerEvent(QTimerEvent */*event*/)
@@ -309,17 +474,17 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
     ++msec;
 
-    if (msec == keysDelay && (currentGameState == GameOver || currentGameState == TheWon)) {
+    if (msec == (keysDelay / getScaleLevel()) && (currentGameState == GameOver || currentGameState == TheWon)) {
         keysAvailable = true;
     }
 
-    if (msec == soundDelay && currentGameState == MainScreen) {
+    if (msec == (soundDelay / getScaleLevel()) && currentGameState == MainScreen) {
         if (sound && s_start->isFinished()) {
             s_start->play();
         }
     }
 
-    if (msec == soundDelay && currentGameState == GameOver) { // Fix bug with laggy playing this sound
+    if (msec == (soundDelay / getScaleLevel()) && currentGameState == GameOver) { // Fix bug with laggy playing this sound
         if (sound) {
             stopAllSfx();
         }
@@ -331,7 +496,7 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         }
     }
 
-    if (msec == soundDelay && currentGameState == TheWon) {
+    if (msec == (soundDelay / getScaleLevel()) && currentGameState == TheWon) {
         if (sound) {
             stopAllSfx();
         }
@@ -737,7 +902,7 @@ void Widget::drawAll(QPainter &painter)
     // Draw all cans
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
-            painter.drawPixmap(cansCoords[i][j], (j % 2) ? pixCans[j] : pixCans[j + 4]);
+            painter.drawPixmap(cansCoords[i][j], (i % 2) ? pixCans[j] : pixCans[j + 4]);
         }
     }
 
@@ -823,10 +988,10 @@ void Widget::drawGameText(const QString &aStr, QPainter &painter)
     QColor colorBlack(0, 0, 0);
     QColor colorWhite(255, 255, 255);
 
-    int f_offset = 30;
+    int f_offset = 10 + 4 * screen_w / 100; // 4%
 
     QFont fontBig = painter.font();
-    fontBig.setPixelSize(20);
+    fontBig.setPixelSize(10 + 1 * screen_w / 100); // 1%
     fontBig.setBold(true);
     painter.setFont(fontBig);
 
@@ -840,7 +1005,7 @@ void Widget::drawGameText(const QString &aStr, QPainter &painter)
             offset = 1;
         }
 
-        painter.drawText(0, 0, 640, painter.font().pixelSize() + f_offset + offset,
+        painter.drawText(0, 0, canvas_w, painter.font().pixelSize() + f_offset + offset,
                          Qt::AlignHCenter | Qt::AlignVCenter, aStr);
     }
 }
@@ -858,6 +1023,82 @@ void Widget::drawRectangles(QPainter &painter)
     painter.setPen(QPen(Qt::black, 2));
     for (int i = 0; i < 7; ++i) {
         painter.drawRect(mouseCoords[i]);
+    }
+}
+
+void Widget::writeConfig()
+{
+    if (!configAvailable) {
+        iniSettings->beginGroup("Canvas");
+        iniSettings->setValue("Width", canvas_w);
+        iniSettings->setValue("Height", canvas_h);
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("CanCoords");
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                iniSettings->setValue(QString("Can_%1_%2").arg(i).arg(j), cansCoords[i][j]);
+            }
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("ChiefCoords");
+        for (int i = 0; i < 4; ++i) {
+            iniSettings->setValue(QString("Chief_%1").arg(i), chiefCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("LiveCoords");
+        for (int i = 0; i < 3; ++i) {
+            iniSettings->setValue(QString("Live_%1").arg(i), chairCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("BrokenCoords");
+        for (int i = 0; i < 2; ++i) {
+            iniSettings->setValue(QString("Broken_%1").arg(i), brokenCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("DigitCoords");
+        for (int i = 0; i < 4; ++i) {
+            iniSettings->setValue(QString("Digit_%1").arg(i), digitCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("DendyCoords");
+        for (int i = 0; i < 2; ++i) {
+            iniSettings->setValue(QString("Dendy_%1").arg(i), dendyCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("ButtonsCoords");
+        for (int i = 0; i < 7; ++i) {
+            iniSettings->setValue(QString("Button_%1").arg(i), buttonCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("MouseCoords");
+        for (int i = 0; i < 7; ++i) {
+            iniSettings->setValue(QString("Mouse_%1").arg(i), mouseCoordsAdd[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("HintsCoords");
+        for (int i = 0; i < 7; ++i) {
+            iniSettings->setValue(QString("Hint_%1").arg(i), hintsCoords[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("Levels");
+        for (int i = 0; i < 7; ++i) {
+            iniSettings->setValue(QString("Level_%1").arg(i), level[i]);
+        }
+        iniSettings->endGroup();
+
+        iniSettings->beginGroup("Rectangles");
+        iniSettings->setValue("Draw", drawRects);
+        iniSettings->endGroup();
     }
 }
 #endif
@@ -929,14 +1170,14 @@ bool Widget::checkAllGfxRes()
     dirName = qApp->applicationDirPath() + "/gfx/";
     QFileInfo dirInfo(dirName);
 
-    if (!dirInfo.isDir() && !dirInfo.isReadable()) {
+    if (!dirInfo.exists() && !dirInfo.isDir() && !dirInfo.isReadable()) {
         return false;
     } else {
         gfxFiles = updateGfxListFiles(dirName);
         QString fileName;
         foreach (fileName, gfxFiles) {
             QFileInfo fileInfo(fileName);
-            if (!fileInfo.isFile() && !fileInfo.isReadable()) {
+            if (!fileInfo.exists() && !fileInfo.isFile() && !fileInfo.isReadable()) {
                 return false;
             }
         }
@@ -951,7 +1192,7 @@ bool Widget::checkAllSfxRes()
     dirName = qApp->applicationDirPath() + "/sfx/";
     QFileInfo dirInfo(dirName);
     QStringList filesList;
-    if (!dirInfo.isDir() && !dirInfo.isReadable()) {
+    if (!dirInfo.exists() && !dirInfo.isDir() && !dirInfo.isReadable()) {
         return false;
     } else {
         QString fileName;
@@ -961,7 +1202,7 @@ bool Widget::checkAllSfxRes()
 
         foreach (fileName, filesList) {
             QFileInfo fileInfo(fileName);
-            if (!fileInfo.isFile() && !fileInfo.isReadable()) {
+            if (!fileInfo.exists() && !fileInfo.isFile() && !fileInfo.isReadable()) {
                 return false;
             }
         }
@@ -987,6 +1228,12 @@ void Widget::loadAllSfx()
     s_miss = new QSound(sfxFiles[3], this);
     s_gameOver = new QSound(sfxFiles[4], this);
     s_Win = new QSound(sfxFiles[5], this);
+}
+
+bool Widget::checkIniFile(const QString &aFileName)
+{
+    QFileInfo fileInfo(aFileName);
+    return fileInfo.exists() && fileInfo.isFile() && fileInfo.isReadable();
 }
 
 QStringList Widget::getAllGfxFiles() const
@@ -1068,6 +1315,14 @@ void Widget::loadAllGfx()
 
     pixWonScreen.load(gfxFiles[35]); // Load won screen*/
 }
+
+/*void Widget::setCanvasSize(int aW, int aH, int config)
+{
+    canvas_w = screen_w = aW;
+    canvas_h = screen_h = aH;
+
+    configAvailable = config;
+}*/
 
 Widget::~Widget()
 {

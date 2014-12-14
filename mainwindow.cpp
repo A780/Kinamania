@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setPixmapSize(int,int)), ui->centralWidget, SLOT(slotSetPixmapSize(int,int)));
     connect(ui->action_Original_screen_size, SIGNAL(triggered()), this, SLOT(slotSetOriginalScreenSize()));
 
-    resize(640, 399 + ui->menuBar->height());
+    //resize(640, 399 + ui->menuBar->height());
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -63,9 +63,18 @@ void MainWindow::slotDisableSoundMenu()
     ui->action_Sound->setEnabled(false);
 }
 
+void MainWindow::setCanvasSize(int aWidth, int aHeight)
+{
+    canvas_w = aWidth;
+    canvas_h = aHeight;
+
+    resize(canvas_w, canvas_h + ui->menuBar->height());
+    //ui->centralWidget->setCanvasSize(canvas_w, canvas_h, aConfigAvailable);
+}
+
 void MainWindow::slotSetOriginalScreenSize()
 {
-    resize(640, 399 + ui->menuBar->height());
+    resize(canvas_w, canvas_h + ui->menuBar->height());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)

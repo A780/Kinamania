@@ -6,7 +6,11 @@ TODO:
 v. 0.3 (12/14/2014)
     * Add current time to pause screen;
     * Update background;
-    * Fix memory corrupt reading
+    * Fix memory corrupt reading;
+    * Add reading Kinamania.ini config;
+    * Optimize updateMouseCoord() func;
+    * Fix bug whith drawing second cans on left side;
+    * Fix text position;
 
 v. 0.2 (12/13/2014)
 

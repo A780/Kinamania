@@ -8,6 +8,7 @@
 #include <QTimerEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QSettings>
 
 #include <QStringList>
 
@@ -19,9 +20,22 @@ public:
     Widget(QWidget *parent = 0);
     ~Widget();
 
+public:
+    //void setCanvasSize(int aW, int aH, int config);
+
 private:
+    QSettings *iniSettings;
+    QString iniFileName;
+
+    bool drawRects;
+
+    int canvas_w;
+    int canvas_h;
+
     int screen_w;
     int screen_h;
+
+    bool configAvailable;
 
     int timerID;
     int msec;
@@ -100,8 +114,13 @@ private:
     QPoint buttonCoords[7];
 
     QRect mouseCoords[7];
+    QPoint mouseCoordsAdd[7];
+    int buttonCoords_x[7];
+    int buttonCoords_y[7];
+    int mouseCoordsAdd_x[7];
+    int mouseCoordsAdd_y[7];
 
-    int levels[7];
+    int level[7];
 
 private:
     bool checkAllGfxRes();
@@ -112,6 +131,8 @@ private:
     bool checkAllSfxRes();
     QStringList getAllSfxFiles() const;
     void loadAllSfx();
+
+    bool checkIniFile(const QString &aFileName);
 
     void initAll();
 
@@ -125,6 +146,7 @@ private:
 
     void initMouseCoords();
     void updateMouserCoords();
+    void initMouseCoordsParts();
     int getScaleLevel() const;
 
     void initLevels();
@@ -146,6 +168,7 @@ private:
 
 #ifdef _DEBUG
     void drawRectangles(QPainter &painter);
+    void writeConfig();
 #endif
 
     void drawDigitPairs(int number, int pair, QPainter &painter);
