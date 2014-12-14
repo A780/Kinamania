@@ -81,8 +81,15 @@ private:
         TheGame,
         TheWon,
         GameOver,
-        Pause
+        Pause,
+        GameB
     };
+
+    int gbSide[4];
+    int gbSideState[4];
+    int gbLevel;
+    int gbCansState[4];
+    int gbInterval;
 
     int currentGameState;
 

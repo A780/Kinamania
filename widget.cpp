@@ -63,7 +63,7 @@ Widget::Widget(QWidget *parent)
 
     resetAllVariables();
 
-    currentGameState = MainScreen;
+    currentGameState = GameB;
 
     // ------------------ Load gfx and sfx ------------------- //
     loadAllGfx();
@@ -440,7 +440,16 @@ void Widget::resetAllVariables()
     //    lives = 6;
     lives = 3;
     delay = 100;
-//    gotIt = 0;
+    //    gotIt = 0;
+
+    for (int i = 0; i < 4; ++i) {
+        gbSide[i] = (-1);
+        gbSideState[i] = (-1);
+        gbCansState[i] = (-1);
+    }
+
+    gbLevel = 0;
+    gbInterval = 0;
 }
 
 void Widget::paintEvent(QPaintEvent */*event*/)
@@ -472,6 +481,11 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     }
 
     int num = qrand() % 16;
+
+    for (int i = 0; i < 4; ++i) {
+        gbSide[i] = qrand() % 16;
+    }
+
     int dendy = qrand() % 100;
 
     ++msec;
@@ -504,6 +518,203 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         }
         if (sound && s_gameOver->isFinished()) {
             s_Win->play();
+        }
+    }
+
+    if (msec >= delay && currentGameState == GameB) { // 100 is one sec
+        msec = 0;
+
+        if (brokenDelay) {
+            --brokenDelay;
+        } else {
+            /*if (dendyState == (-1)) {
+                if (dendy >= 20 && dendy < 25) {
+                    //if (1) {
+                    if (!(dendyDelay > 0)) {
+                        dendyDelay = 4;
+                    }
+                }
+            }
+
+            if (dendyDelay >= 0) {
+                --dendyDelay;
+            }
+
+            if (dendyDelay <= 0 && dendyState != (-1)) {
+                dendyState = (-1);
+            }
+
+#ifdef _DEBUG
+            qDebug() << "############### Dendy" << dendyDelay << dendyState << dendy;
+#endif
+
+            switch (dendyDelay) {
+            case 3:
+            case 2: {
+                dendyState = 0;
+                break;
+            }
+            case 1:
+            case 0: {
+                dendyState = 1;
+                break;
+            }
+            default:
+                break;
+            }*/
+
+            //if (score) {
+            gbLevel = 2;
+            //}
+
+            qDebug() << "1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSide[0] << gbSide[1] << gbSide[2] << gbSide[3];
+
+            if (1) {
+                for (int i = 0; i < 4; ++i) {
+                    if (gbSide[i] >= 0 && gbSide[i] < 4) {
+                        if (gbCansState[i] == (-1)) {
+                            gbSideState[i] = 0;
+                        }
+                    }
+
+                    if (gbSide[i] >= 4 && gbSide[i] < 8) {
+                        if (gbCansState[i] == (-1)) {
+                            gbSideState[i] = 1;
+                        }
+                    }
+
+                    if (gbSide[i] >= 8 && gbSide[i] < 12) {
+                        if (gbCansState[i] == (-1)) {
+                            gbSideState[i] = 2;
+                        }
+                    }
+
+                    if (gbSide[i] >= 12 && gbSide[i] < 16) {
+                        if (gbCansState[i] == (-1)) {
+                            gbSideState[i] = 3;
+                        }
+                    }
+                }
+            }
+
+            qDebug() << "2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSideState[0] << gbSideState[1] << gbSideState[2] << gbSideState[3];
+
+            if (gbLevel > 3) {
+                gbLevel = 3;
+            }
+
+            for (int i = 3; i > gbLevel; --i) {
+                gbSideState[i] = (-1);
+            }
+
+            qDebug() << "3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSideState[0] << gbSideState[1] << gbSideState[2] << gbSideState[3];
+            //qDebug() << "4!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
+
+            //if (gbInterval == 0) {
+
+            for (int i = 0; i < 4; ++i) {
+                if (gbSideState[i] != (-1)) {
+                    if (gbCansState[i] != (-1)) {
+                        //if (gbCansState[i] != 0) {
+                            ++gbCansState[i];
+                        //}
+                    }
+                    if (gbCansState[i] >= 4) {
+                        gbCansState[i] = (-1);
+                    }
+                }
+            }
+
+            bool canSpawn = false;
+            for (int i = 0; i < 4; ++i) {
+                if (gbCansState[i] == 2) {
+                    canSpawn = true;
+                }
+            }
+
+            if (gbInterval == 0) {
+                gbCansState[0] = 0;
+            }
+
+            if (gbInterval % 2 != 0) {
+                if (gbCansState[0] == (-1)) {
+                    gbCansState[0] = 0;
+                }
+                if (canSpawn) {
+                    gbCansState[1] = 0;
+                }
+            }
+
+            //}
+            //                    }
+            //                    if (gbCansState[i] >= 4) {
+            //                        gbCansState[i] = (-1);
+            //                    }
+
+
+            //if (interval)
+            //            for (int i = 0; i < 4; ++i) {
+            //                if (gbSideState[i] != (-1)) {
+            //                    if (gbInterval == 0) {
+            //                        ++gbCansState[0];
+            //                    }
+            //                    if (gbCansState[i] >= 4) {
+            //                        gbCansState[i] = (-1);
+            //                    }
+            //                }
+            //            }
+
+            qDebug() << "5!!!!!!!!!!!!" << gbInterval << "!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
+
+            ++gbInterval;
+
+            ++canState;
+
+            if (canState == 4 && sideState == chiefState) {
+                ++score;
+                if (sound && s_got->isFinished()) {
+                    s_got->play();
+                }
+#ifdef _DEBUG
+                qDebug() << "You won! Can is:" << score;
+#endif
+            } else if (canState == 4 && sideState != chiefState && dendyState == (-1)) {
+                --lives;
+
+                brokenState = sideState;
+                //gotIt = 1;
+                brokenDelay = 4;
+
+                if (sound && s_miss->isFinished()) {
+                    s_miss->play();
+                }
+#ifdef _DEBUG
+                qDebug() << "You Lose! Lives:" << lives;
+#endif
+                if (lives < 0) {
+                    currentGameState = GameOver;
+                    resetAllVariables();
+                }
+            } else {
+                if (sound && s_move->isFinished()) {
+                    s_move->play();
+                }
+            }
+
+            if (canState >= 4) {
+                canState = (-1);
+            }
+
+            if (score >= 100) {
+                currentGameState = TheWon;
+                resetAllVariables();
+            }
+
+#ifdef _DEBUG
+            qDebug() << canState << sideState << chiefState << delay;
+#endif
+
+            refreshDelay();
         }
     }
 
@@ -830,6 +1041,18 @@ void Widget::drawGameFrame()
         drawAll(painter);
         drawKeyHints(painter);
         drawButtons(painter);
+        break;
+    }
+    case GameB: {
+        for (int i = 0; i < 4; ++i) {
+            if (gbCansState[i] != (-1)) {
+                painter.drawPixmap(cansCoords[gbSideState[i]][gbCansState[i]],
+                        (gbSideState[i] % 2) ? pixCans[gbCansState[i]] : pixCans[gbCansState[i] + 4]);
+            } /*else if (brokenDelay && brokenState != (-1)) {
+                painter.drawPixmap((brokenState % 2 == 0) ? brokenCoords[0] : brokenCoords[1],
+                        (brokenState % 2 == 0) ? pixBroken[0] : pixBroken[1]);
+            }*/
+        }
         break;
     }
     case TheGame: {
