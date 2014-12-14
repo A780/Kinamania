@@ -786,7 +786,7 @@ void Widget::drawKeyHints(QPainter &painter)
 
     painter.setFont(fontBig);
 
-    QPoint coords[6];
+    QPoint coords[7];
     for (int i = 0; i < 2; ++i) {
         int offset;
         if (i % 2 == 0) {
