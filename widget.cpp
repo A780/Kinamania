@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QFileInfo>
 #include <QApplication>
+#include <QTime>
 
 #ifdef _DEBUG
 #include <QDebug>
@@ -698,6 +699,8 @@ void Widget::drawGameFrame()
     case Pause: {
         drawGameText(strPause, painter);
         drawButtons(painter);
+        drawDigitPairs(QTime::currentTime().toString("hh").toInt(), 0, painter);
+        drawDigitPairs(QTime::currentTime().toString("mm").toInt(), 1, painter);
         break;
     }
     default:
@@ -796,7 +799,7 @@ void Widget::drawKeyHints(QPainter &painter)
 
         for (int j = 0; j < 7; ++j) {
             coords[j].setX(hintsCoords[j].x() + offset);
-            coords[j].setY(hintsCoords[j].y() + offset);
+            coords[j].setY(hintsCoords[j].y());
         }
 
         for (int k = 0; k < 4; ++k) {
@@ -818,7 +821,7 @@ void Widget::drawKeyHints(QPainter &painter)
 void Widget::drawGameText(const QString &aStr, QPainter &painter)
 {
     QColor colorBlack(0, 0, 0);
-    QColor colorRed(255, 255, 255);
+    QColor colorWhite(255, 255, 255);
 
     int f_offset = 30;
 
@@ -830,7 +833,7 @@ void Widget::drawGameText(const QString &aStr, QPainter &painter)
     for (int i = 0; i < 2; ++i) {
         int offset;
         if (i % 2 == 0) {
-            painter.setPen(colorRed);
+            painter.setPen(colorWhite);
             offset = 0;
         } else {
             painter.setPen(colorBlack);

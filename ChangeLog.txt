@@ -3,6 +3,10 @@ TODO:
     * Add config with coordinats;
     * Add animation at the end of the game.
 
+v. 0.3 (12/14/2014)
+    * Add current time to pause screen;
+    * Update background;
+
 v. 0.2 (12/13/2014)
 
     * Fix playing Game Over sound;
