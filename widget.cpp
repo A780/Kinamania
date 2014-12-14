@@ -799,6 +799,7 @@ void Widget::slotStartNewGame()
 {
     resetAllVariables();
     currentGameState = TheGame;
+    buttonState = 4; // Emulate pushing F5 button
 }
 
 void Widget::slotReset()

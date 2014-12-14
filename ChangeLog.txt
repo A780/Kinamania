@@ -12,6 +12,8 @@ v. 0.3 (12/14/2014)
     * Fix text position;
     * Fix some delays;
     * Add a slight pause after the broken cans;
+    * Fix drawing F5 button;
+    * Fix chief sprites;
 
 v. 0.2 (12/13/2014)
 
