@@ -85,11 +85,13 @@ private:
         GameB
     };
 
-    int gbSide[4];
+    int gbNum[4];
     int gbSideState[4];
     int gbLevel;
     int gbCansState[4];
     int gbInterval;
+    bool gbUpdateCoords[4];
+    bool gbCanSpawn;
 
     int currentGameState;
 

@@ -443,11 +443,13 @@ void Widget::resetAllVariables()
     //    gotIt = 0;
 
     for (int i = 0; i < 4; ++i) {
-        gbSide[i] = (-1);
+        gbNum[i] = (-1);
         gbSideState[i] = (-1);
         gbCansState[i] = (-1);
+        gbUpdateCoords[i] = true;
     }
 
+    gbCanSpawn = false;
     gbLevel = 0;
     gbInterval = 0;
 }
@@ -483,8 +485,10 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     int num = qrand() % 16;
 
     for (int i = 0; i < 4; ++i) {
-        gbSide[i] = qrand() % 16;
+        gbNum[i] = qrand() % 16;
     }
+
+    //gbCanSpawn = false;
 
     int dendy = qrand() % 100;
 
@@ -527,72 +531,58 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         if (brokenDelay) {
             --brokenDelay;
         } else {
-            /*if (dendyState == (-1)) {
-                if (dendy >= 20 && dendy < 25) {
-                    //if (1) {
-                    if (!(dendyDelay > 0)) {
-                        dendyDelay = 4;
-                    }
-                }
-            }
-
-            if (dendyDelay >= 0) {
-                --dendyDelay;
-            }
-
-            if (dendyDelay <= 0 && dendyState != (-1)) {
-                dendyState = (-1);
-            }
-
-#ifdef _DEBUG
-            qDebug() << "############### Dendy" << dendyDelay << dendyState << dendy;
-#endif
-
-            switch (dendyDelay) {
-            case 3:
-            case 2: {
-                dendyState = 0;
-                break;
-            }
-            case 1:
-            case 0: {
-                dendyState = 1;
-                break;
-            }
-            default:
-                break;
-            }*/
-
             //if (score) {
-            gbLevel = 2;
+            gbLevel = 3;
             //}
 
-            qDebug() << "1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSide[0] << gbSide[1] << gbSide[2] << gbSide[3];
+            qDebug() << "1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbNum[0] << gbNum[1] << gbNum[2] << gbNum[3];
 
             if (1) {
                 for (int i = 0; i < 4; ++i) {
-                    if (gbSide[i] >= 0 && gbSide[i] < 4) {
+                    if (gbNum[i] >= 0 && gbNum[i] < 4) {
                         if (gbCansState[i] == (-1)) {
                             gbSideState[i] = 0;
                         }
                     }
 
-                    if (gbSide[i] >= 4 && gbSide[i] < 8) {
+                    if (gbNum[i] >= 4 && gbNum[i] < 8) {
                         if (gbCansState[i] == (-1)) {
                             gbSideState[i] = 1;
                         }
                     }
 
-                    if (gbSide[i] >= 8 && gbSide[i] < 12) {
+                    if (gbNum[i] >= 8 && gbNum[i] < 12) {
                         if (gbCansState[i] == (-1)) {
                             gbSideState[i] = 2;
                         }
                     }
 
-                    if (gbSide[i] >= 12 && gbSide[i] < 16) {
+                    if (gbNum[i] >= 12 && gbNum[i] < 16) {
                         if (gbCansState[i] == (-1)) {
                             gbSideState[i] = 3;
                         }
+                    }
+                    //                    gbUpdateCoords[i] = false;
+                }
+            }
+
+            for (int i = 0; i <= gbLevel; ++i) {
+                if (gbSideState[i] != (-1)) {
+                    if (gbCansState[i] != (-1)) {
+                        ++gbCansState[i];
+                    }
+                    /*if (gbCansState[i] >= 4) {
+                        gbCansState[i] = (-1);
+                    }*/
+                }
+            }
+
+            if (gbCanSpawn) {
+                for (int i = 0; i <= gbLevel; ++i) {
+                    if (gbCansState[i] == (-1)) {
+                        //gbUpdateCoords[i] = true;
+                        gbCansState[i] = 0;
+                        break;
                     }
                 }
             }
@@ -608,27 +598,12 @@ void Widget::timerEvent(QTimerEvent */*event*/)
             }
 
             qDebug() << "3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSideState[0] << gbSideState[1] << gbSideState[2] << gbSideState[3];
-            //qDebug() << "4!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
+            qDebug() << "4!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
 
-            //if (gbInterval == 0) {
-
-            for (int i = 0; i < 4; ++i) {
-                if (gbSideState[i] != (-1)) {
-                    if (gbCansState[i] != (-1)) {
-                        //if (gbCansState[i] != 0) {
-                            ++gbCansState[i];
-                        //}
-                    }
-                    if (gbCansState[i] >= 4) {
-                        gbCansState[i] = (-1);
-                    }
-                }
-            }
-
-            bool canSpawn = false;
-            for (int i = 0; i < 4; ++i) {
-                if (gbCansState[i] == 2) {
-                    canSpawn = true;
+            //canSpawn = false;
+            for (int i = 0; i < gbLevel; ++i) {
+                if (gbCansState[i] == 1) {
+                    gbCanSpawn = true;
                 }
             }
 
@@ -636,35 +611,11 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 gbCansState[0] = 0;
             }
 
-            if (gbInterval % 2 != 0) {
-                if (gbCansState[0] == (-1)) {
-                    gbCansState[0] = 0;
-                }
-                if (canSpawn) {
-                    gbCansState[1] = 0;
-                }
+            if (gbLevel == 0 && gbCansState[0] == (-1)) {
+                gbCansState[0] = 0;
             }
 
-            //}
-            //                    }
-            //                    if (gbCansState[i] >= 4) {
-            //                        gbCansState[i] = (-1);
-            //                    }
-
-
-            //if (interval)
-            //            for (int i = 0; i < 4; ++i) {
-            //                if (gbSideState[i] != (-1)) {
-            //                    if (gbInterval == 0) {
-            //                        ++gbCansState[0];
-            //                    }
-            //                    if (gbCansState[i] >= 4) {
-            //                        gbCansState[i] = (-1);
-            //                    }
-            //                }
-            //            }
-
-            qDebug() << "5!!!!!!!!!!!!" << gbInterval << "!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
+            qDebug() << "5!!!!!!!!!!!!!!!" << gbInterval << "!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
 
             ++gbInterval;
 
@@ -701,8 +652,10 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 }
             }
 
-            if (canState >= 4) {
-                canState = (-1);
+            for (int i = 0; i <= gbLevel; ++i) {
+                if (gbCansState[i] >= 4) {
+                    gbCansState[i] = (-1);
+                }
             }
 
             if (score >= 100) {
