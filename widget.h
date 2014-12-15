@@ -76,13 +76,13 @@ private:
     QStringList gfxFiles;
     QStringList sfxFiles;
 
-    enum gameState { // 0 - Main Screen, 1 - Game, 2 - Won, 3 - Game Over, 4 - Pause
+    enum gameState { // 0 - Main Screen, 1 - Game B, 2 - Won, 3 - Game Over, 4 - Pause, 5 - Game A
         MainScreen,
-        TheGame,
+        GameModeB,
         TheWon,
         GameOver,
         Pause,
-        GameB
+        GameModeA
     };
 
     // Game B Mode
@@ -207,8 +207,8 @@ protected slots:
 
 protected slots:
     void slotEnableSound(bool aSound);
-    void slotStartNewGameA();
-    void slotStartNewGameB();
+    void slotStartNewGameModeA();
+    void slotStartNewGameModeB();
     void slotReset();
     void slotSetPixmapSize(int w, int h);
 };

@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(ui->action_About, SIGNAL(triggered()), this, SLOT(slotShowAbout()));
-    connect(ui->actionGame_Mode_A, SIGNAL(triggered()), ui->centralWidget, SLOT(slotStartNewGameA()));
-    connect(ui->actionGame_Mode_B, SIGNAL(triggered()), ui->centralWidget, SLOT(slotStartNewGameB()));
+    connect(ui->actionGame_Mode_A, SIGNAL(triggered()), ui->centralWidget, SLOT(slotStartNewGameModeA()));
+    connect(ui->actionGame_Mode_B, SIGNAL(triggered()), ui->centralWidget, SLOT(slotStartNewGameModeB()));
     connect(ui->action_Reset, SIGNAL(triggered()), ui->centralWidget, SLOT(slotReset()));
     connect(ui->action_Sound, SIGNAL(triggered(bool)), ui->centralWidget, SLOT(slotEnableSound(bool)));
     connect(ui->centralWidget, SIGNAL(disableSound()), this, SLOT(slotDisableSoundMenu()));

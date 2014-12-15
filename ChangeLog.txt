@@ -1,8 +1,8 @@
 TODO:
-    * Add Game B Mode;
+    * Porting to Android;
     * Add animation at the end of the game.
 
-v. 0.3 (12/14/2014)
+v. 0.3 (12/14/2014 - 12/16/2014)
     * Add current time to pause screen;
     * Update background;
     * Fix memory corrupt reading;
@@ -12,10 +12,14 @@ v. 0.3 (12/14/2014)
     * Fix text position;
     * Fix some delays;
     * Add a slight pause after the broken cans;
-    * Fix drawing F5 button;
+    * Fix drawing F5/F6 buttons;
     * Fix chief sprites;
     * Add Game B mode;
     * Update About dialog;
+    * Change main Game Mode to Game B, Game A <-> Game B;
+    * Update screens;
+    * Update translations;
+    * Fix bug with previous Game State;
 
 v. 0.2 (12/13/2014)
 

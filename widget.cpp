@@ -64,6 +64,7 @@ Widget::Widget(QWidget *parent)
     resetAllVariables();
 
     currentGameState = MainScreen;
+    previousGameState = GameModeA;
 
     // ------------------ Load gfx and sfx ------------------- //
     loadAllGfx();
@@ -396,7 +397,7 @@ void Widget::refreshDelay()
     qDebug() << "--------------- Scale Level is:" << getScaleLevel() << currentGameState << previousGameState << dendyState;
 #endif
 
-    if (currentGameState == TheGame) {
+    if (currentGameState == GameModeB) {
         if (score >= 0 && score < 10) {
             delay = level[0] / getScaleLevel();
         }
@@ -424,7 +425,7 @@ void Widget::refreshDelay()
         if (score >= 95 && score < 100) {
             delay = level[6] / getScaleLevel();
         }
-    } else if (currentGameState == GameB) { // Delays for Game B mode
+    } else if (currentGameState == GameModeA) { // Delays for Game B mode
         if (score >= 0 && score < 10) {
             delay = level[0] / getScaleLevel();
         }
@@ -483,8 +484,6 @@ void Widget::resetAllVariables()
     lives = 3;
     delay = 100;
     //    gotIt = 0;
-
-    previousGameState = GameB;
 
     for (int i = 0; i < 4; ++i) {
         gbNum[i] = (-1);
@@ -569,7 +568,7 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         }
     }
 
-    if (msec >= delay && currentGameState == GameB) { // 100 is one sec
+    if (msec >= delay && currentGameState == GameModeA) { // 100 is one sec
         msec = 0;
 
         if (gbInterval == 0) {
@@ -815,7 +814,7 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         }
     }
 
-    if (msec >= delay && currentGameState == TheGame) { // 100 is one sec
+    if (msec >= delay && currentGameState == GameModeB) { // 100 is one sec
         msec = 0;
 
         if (gbInterval == 0) {
@@ -993,13 +992,13 @@ void Widget::keyPressEvent(QKeyEvent *event)
         break;
     }
     case Qt::Key_F6: {
-        buttonState = 5;
-        slotStartNewGameB();
+        buttonState = 4;
+        slotStartNewGameModeA();
         break;
     }
     case Qt::Key_F5: {
-        buttonState = 4;
-        slotStartNewGameA();
+        buttonState = 5;
+        slotStartNewGameModeB();
         break;
     }
     default:
@@ -1075,13 +1074,13 @@ void Widget::mousePressEvent(QMouseEvent *event)
     }
 
     if (mouseCoords[4].contains(event->pos())) {
-        buttonState = 4;
-        slotStartNewGameA();
+        buttonState = 5;
+        slotStartNewGameModeA();
     }
 
     if (mouseCoords[5].contains(event->pos())) {
-        buttonState = 5;
-        slotStartNewGameB();
+        buttonState = 4;
+        slotStartNewGameModeB();
     }
 
     if (mouseCoords[6].contains(event->pos())) {
@@ -1112,18 +1111,18 @@ void Widget::slotEnableSound(bool aSound)
     sound = aSound;
 }
 
-void Widget::slotStartNewGameA()
+void Widget::slotStartNewGameModeB()
 {
     resetAllVariables();
-    previousGameState = currentGameState = TheGame;
-    buttonState = 4; // Emulate pushing F5 button
+    previousGameState = currentGameState = GameModeB;
+    buttonState = 5; // Emulate pushing F5 button
 }
 
-void Widget::slotStartNewGameB()
+void Widget::slotStartNewGameModeA()
 {
     resetAllVariables();
-    previousGameState = currentGameState = GameB;
-    buttonState = 5; // Emulate pushing F6 button
+    previousGameState = currentGameState = GameModeA;
+    buttonState = 4; // Emulate pushing F6 button
 }
 
 void Widget::slotReset()
@@ -1156,7 +1155,7 @@ void Widget::drawGameFrame()
         drawButtons(painter);
         break;
     }
-    case GameB: {
+    case GameModeA: {
         // Draw pepsi cans
         for (int i = 0; i < 4; ++i) {
             if (gbCansState[i] != (-1)) {
@@ -1189,7 +1188,7 @@ void Widget::drawGameFrame()
         drawButtons(painter);
         break;
     }
-    case TheGame: {
+    case GameModeB: {
         // Draw pepsi cans
         if (canState != (-1)) {
             painter.drawPixmap(getCanCoords(), getCanPixmap());
