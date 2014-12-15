@@ -572,6 +572,10 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     if (msec >= delay && currentGameState == GameB) { // 100 is one sec
         msec = 0;
 
+        if (gbInterval == 0) {
+            buttonState = (-1);
+        }
+
         if (brokenDelay) {
             --brokenDelay;
         } else {
@@ -814,6 +818,10 @@ void Widget::timerEvent(QTimerEvent */*event*/)
     if (msec >= delay && currentGameState == TheGame) { // 100 is one sec
         msec = 0;
 
+        if (gbInterval == 0) {
+            buttonState = (-1);
+        }
+
         if (brokenDelay) {
             --brokenDelay;
         } else {
@@ -871,6 +879,8 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                     sideState = 3;
                 }
             }
+
+            ++gbInterval;
 
             ++canState;
 
