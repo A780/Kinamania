@@ -434,23 +434,35 @@ void Widget::refreshDelay()
         }
 
         if (score >= 20 && score < 30) {
-            delay = (level[0] - 20) / getScaleLevel();
+            delay = (level[0] - 25) / getScaleLevel();
         }
 
         if (score >= 30 && score < 40) {
-            delay = (level[0] - 30) / getScaleLevel();
-        }
-
-        if (score >= 40 && score < 50) {
             delay = (level[0] - 40) / getScaleLevel();
         }
 
-        if (score >= 50 && score < 85) {
+        if (score >= 40 && score < 50) {
             delay = level[1] / getScaleLevel();
         }
 
-        if (score >= 85 && score < 100) {
+        if (score >= 50 && score < 60) {
             delay = (level[1] - 5) / getScaleLevel();
+        }
+
+        if (score >= 60 && score < 70) {
+            delay = (level[1] - 15) / getScaleLevel();
+        }
+
+        if (score >= 70 && score < 85) {
+            delay = (level[1] - 18) / getScaleLevel();
+        }
+
+        if (score >= 85 && score < 95) {
+            delay = level[2] / getScaleLevel();
+        }
+
+        if (score >= 95 && score < 100) {
+            delay = level[3] / getScaleLevel();
         }
     }
 }
@@ -467,8 +479,8 @@ void Widget::resetAllVariables()
     brokenState = (-1);
     //    score = 0;
     score = 0;
-        lives = 6;
-    //lives = 3;
+    //    lives = 6;
+    lives = 3;
     delay = 100;
     //    gotIt = 0;
 
@@ -706,28 +718,22 @@ void Widget::timerEvent(QTimerEvent */*event*/)
             //++canState;
 
 
-            int movePlay = 0;
+            int gotPlay = 0;
+            int missPlay = 0;
             for (int i = 0; i < 4; ++i) {
                  if (gbCansState[i] == 4 && gbSideState[i] == chiefState) {
-                    ++movePlay;
+                    ++gotPlay;
                     ++score;
-                    if (sound && s_got->isFinished()) {
-                        s_got->play();
-                    }
 #ifdef _DEBUG
                     qDebug() << "6!!!!!!!!!!!!!!!!!!!!!!! You won! Can is:" << score;
 #endif
                 } else if (gbCansState[i] == 4 && gbSideState[i] != chiefState && dendyState == (-1)) {
-                     ++movePlay;
+                     ++missPlay;
                      --lives;
 
                      brokenState = gbSideState[i];
                      //gotIt = 1;
                      brokenDelay = 4;
-
-                     if (sound && s_miss->isFinished()) {
-                         s_miss->play();
-                     }
  #ifdef _DEBUG
                      qDebug() << "7!!!!!!!!!!!!!!!!!!!!!!! You Lose! Lives:" << lives;
  #endif
@@ -738,9 +744,17 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                  }
             }
 
-            if (!movePlay) {
+            if (!gotPlay && !missPlay) {
                 if (sound && s_move->isFinished()) {
                     s_move->play();
+                }
+            } else if (gotPlay) {
+                if (sound && s_got->isFinished()) {
+                    s_got->play();
+                }
+            } else if (missPlay) {
+                if (sound && s_miss->isFinished()) {
+                    s_miss->play();
                 }
             }
 
