@@ -41,7 +41,7 @@ void MainWindow::changeEvent(QEvent *e)
 void MainWindow::slotShowAbout()
 {
     QMessageBox::about(this, tr("About Kinamania"), tr("<p><center><img src=\":/gfx/eyes.jpg\"/></center></p>"
-                                                       "<p><strong>Version 0.2</strong></p>"
+                                                       "<p><strong>Version 0.3</strong></p>"
                                                        "<b>Key controls:</b><br>"
                                                        "* Q, A, P, L or 7, 9, 1, 3 on NumPad - Move;<br>"
                                                        "* F5 - New Game;<br>"
@@ -49,11 +49,12 @@ void MainWindow::slotShowAbout()
                                                        "* F10 - Quit;<br>"
                                                        "* Pause or G - Pause.<br><br>"
                                                        "Also, you can use mouse control.<br><br>"
+                                                       "Get the latest release of the Kinamania game on <a href=\"https://github.com/A780/Kinamania/releases\">this page</a>.<br>"
                                                        "Teaser of the Kinamania game is available on <a href=\"http://www.youtube.com/watch?v=0ggWeAdZClc\">YouTube</a>!<br>"
                                                        "Source code is available on <a href=\"https://github.com/A780/Kinamania\">GitHub</a>.<br>"
                                                        "<center><table cellspacing=0 cellpadding=0><tr><td>"
                                                        "<b>Big thanks for Help, /fag!</b><br>"
-                                                       "<b>Anonymous artist and A780A</b><br>"
+                                                       "<b>Anonymous artist and <a href=\"mailto:a780a@yandex.ru\">A780</a></b><br>"
                                                        "<b>December, 2014</b><br>"
                                                        "</td><td><img src=\":/gfx/worm.png\"/></td></tr></table></center>"));
 }
