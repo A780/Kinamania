@@ -98,12 +98,13 @@ private:
     int currentGameState;
     int previousGameState;
 
-    QSound *s_got;
+    QSound *s_got[4];
     QSound *s_move;
     QSound *s_start;
     QSound *s_miss;
     QSound *s_gameOver;
     QSound *s_Win;
+    QSound *s_belching;
 
     QPixmap *pixSurface;
 

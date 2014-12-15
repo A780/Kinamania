@@ -752,12 +752,32 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                     s_move->play();
                 }
             } else if (gotPlay) {
-                if (sound && s_got->isFinished()) {
-                    s_got->play();
+                int isF = 0;
+                for (int i = 0; i < 4; ++i) {
+                    if (s_got[i]->isFinished()) {
+                        ++isF;
+                    }
+                }
+                if (sound && isF) {
+                    if (dendy >= 0 && dendy < 25) {
+                        s_got[0]->play();
+                    } else if (dendy >= 25 && dendy < 50) {
+                        s_got[1]->play();
+                    } else if (dendy >= 50 && dendy < 75) {
+                        s_got[2]->play();
+                    } else if (dendy >= 75 && dendy < 100) {
+                        s_got[3]->play();
+                    }
                 }
             } else if (missPlay) {
                 if (sound && s_miss->isFinished()) {
                     s_miss->play();
+                }
+            }
+
+            if (score == 25 || score == 50 || score == 75) {
+                if (sound && s_belching->isFinished()) {
+                    s_belching->play();
                 }
             }
 
@@ -885,8 +905,22 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
             if (canState == 4 && sideState == chiefState) {
                 ++score;
-                if (sound && s_got->isFinished()) {
-                    s_got->play();
+                int isF = 0;
+                for (int i = 0; i < 4; ++i) {
+                    if (s_got[i]->isFinished()) {
+                        ++isF;
+                    }
+                }
+                if (sound && isF) {
+                    if (dendy >= 0 && dendy < 25) {
+                        s_got[0]->play();
+                    } else if (dendy >= 25 && dendy < 50) {
+                        s_got[1]->play();
+                    } else if (dendy >= 50 && dendy < 75) {
+                        s_got[2]->play();
+                    } else if (dendy >= 75 && dendy < 100) {
+                        s_got[3]->play();
+                    }
                 }
 #ifdef _DEBUG
                 qDebug() << "You won! Can is:" << score;
@@ -911,6 +945,12 @@ void Widget::timerEvent(QTimerEvent */*event*/)
             } else {
                 if (sound && s_move->isFinished()) {
                     s_move->play();
+                }
+            }
+
+            if (score == 25 || score == 50 || score == 75) {
+                if (sound && s_belching->isFinished()) {
+                    s_belching->play();
                 }
             }
 
@@ -1513,11 +1553,16 @@ void Widget::pauseGame(bool aPause)
 
 void Widget::stopAllSfx()
 {
-    s_got->stop();
+    for (int i = 0; i < 4; ++i) {
+        s_got[i]->stop();
+    }
+
     s_move->stop();
     s_start->stop();
     s_miss->stop();
     s_gameOver->stop();
+    s_Win->stop();
+    s_belching->stop();
 }
 
 QPixmap Widget::getCanPixmap() const
@@ -1581,20 +1626,33 @@ bool Widget::checkAllSfxRes()
 QStringList Widget::getAllSfxFiles() const
 {
     QStringList sfxFiles;
-    sfxFiles << "Got.wav" << "Move.wav"
-             << "Start.wav" << "Miss.wav"
-             << "Gameover.wav" << "Win.wav";
+
+    for (int i = 0; i < 4; ++i) {
+        sfxFiles << QString("Got_%1.wav").arg(i);
+    }
+
+    sfxFiles << "Move.wav"
+             << "Start.wav"
+             << "Miss.wav"
+             << "Gameover.wav"
+             << "Win.wav"
+             << "Belching.wav";
+
     return sfxFiles;
 }
 
 void Widget::loadAllSfx()
 {
-    s_got = new QSound(sfxFiles[0], this);
-    s_move = new QSound(sfxFiles[1], this);
-    s_start = new QSound(sfxFiles[2], this);
-    s_miss = new QSound(sfxFiles[3], this);
-    s_gameOver = new QSound(sfxFiles[4], this);
-    s_Win = new QSound(sfxFiles[5], this);
+    for (int i = 0; i < 4; ++i) {
+        s_got[i] = new QSound(sfxFiles[i], this);
+    }
+
+    s_move = new QSound(sfxFiles[4], this);
+    s_start = new QSound(sfxFiles[5], this);
+    s_miss = new QSound(sfxFiles[6], this);
+    s_gameOver = new QSound(sfxFiles[7], this);
+    s_Win = new QSound(sfxFiles[8], this);
+    s_belching = new QSound(sfxFiles[9], this);
 }
 
 bool Widget::checkIniFile(const QString &aFileName)
