@@ -181,8 +181,9 @@ private:
     void drawGameText(const QString &aStr, QPainter &painter);
     void drawButtons(QPainter &painter);
 
-#ifdef _DEBUG
     void drawRectangles(QPainter &painter);
+
+#ifdef _DEBUG
     void writeConfig();
 #endif
 

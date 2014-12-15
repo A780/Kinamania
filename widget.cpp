@@ -627,8 +627,9 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
             // gbLevel = 3;
 
+#ifdef _DEBUG
             qDebug() << "1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbNum[0] << gbNum[1] << gbNum[2] << gbNum[3];
-
+#endif
             if (1) {
                 for (int i = 0; i < 4; ++i) {
                     if (gbNum[i] >= 0 && gbNum[i] < 4) {
@@ -679,8 +680,9 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 }
             }
 
+#ifdef _DEBUG
             qDebug() << "2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSideState[0] << gbSideState[1] << gbSideState[2] << gbSideState[3];
-
+#endif
             if (gbLevel > 3) {
                 gbLevel = 3;
             }
@@ -689,8 +691,10 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 gbSideState[i] = (-1);
             }
 
+#ifdef _DEBUG
             qDebug() << "3!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbSideState[0] << gbSideState[1] << gbSideState[2] << gbSideState[3];
             qDebug() << "4!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
+#endif
 
             //canSpawn = false;
             for (int i = 0; i < gbLevel; ++i) {
@@ -714,7 +718,9 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 gbCansState[0] = 0;
             }
 
+#ifdef _DEBUG
             qDebug() << "5!!!!!!!!!!!!!!!" << gbInterval << "!!!!!!!!!!!!! Cans:" << gbCansState[0] << gbCansState[1] << gbCansState[2] << gbCansState[3];
+#endif
 
             ++gbInterval;
 
@@ -724,27 +730,27 @@ void Widget::timerEvent(QTimerEvent */*event*/)
             int gotPlay = 0;
             int missPlay = 0;
             for (int i = 0; i < 4; ++i) {
-                 if (gbCansState[i] == 4 && gbSideState[i] == chiefState) {
+                if (gbCansState[i] == 4 && gbSideState[i] == chiefState) {
                     ++gotPlay;
                     ++score;
 #ifdef _DEBUG
                     qDebug() << "6!!!!!!!!!!!!!!!!!!!!!!! You won! Can is:" << score;
 #endif
                 } else if (gbCansState[i] == 4 && gbSideState[i] != chiefState && dendyState == (-1)) {
-                     ++missPlay;
-                     --lives;
+                    ++missPlay;
+                    --lives;
 
-                     brokenState = gbSideState[i];
-                     //gotIt = 1;
-                     brokenDelay = 4;
- #ifdef _DEBUG
-                     qDebug() << "7!!!!!!!!!!!!!!!!!!!!!!! You Lose! Lives:" << lives;
- #endif
-                     if (lives < 0) {
-                         currentGameState = GameOver;
-                         resetAllVariables();
-                     }
-                 }
+                    brokenState = gbSideState[i];
+                    //gotIt = 1;
+                    brokenDelay = 4;
+#ifdef _DEBUG
+                    qDebug() << "7!!!!!!!!!!!!!!!!!!!!!!! You Lose! Lives:" << lives;
+#endif
+                    if (lives < 0) {
+                        currentGameState = GameOver;
+                        resetAllVariables();
+                    }
+                }
             }
 
             if (!gotPlay && !missPlay) {
@@ -753,9 +759,11 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 }
             } else if (gotPlay) {
                 int isF = 0;
-                for (int i = 0; i < 4; ++i) {
-                    if (s_got[i]->isFinished()) {
-                        ++isF;
+                if (sound) {
+                    for (int i = 0; i < 4; ++i) {
+                        if (s_got[i]->isFinished()) {
+                            ++isF;
+                        }
                     }
                 }
                 if (sound && isF) {
@@ -906,9 +914,11 @@ void Widget::timerEvent(QTimerEvent */*event*/)
             if (canState == 4 && sideState == chiefState) {
                 ++score;
                 int isF = 0;
-                for (int i = 0; i < 4; ++i) {
-                    if (s_got[i]->isFinished()) {
-                        ++isF;
+                if (sound) {
+                    for (int i = 0; i < 4; ++i) {
+                        if (s_got[i]->isFinished()) {
+                            ++isF;
+                        }
                     }
                 }
                 if (sound && isF) {
@@ -1424,7 +1434,6 @@ void Widget::drawButtons(QPainter &painter)
     }
 }
 
-#ifdef _DEBUG
 void Widget::drawRectangles(QPainter &painter)
 {
     painter.setPen(QPen(Qt::black, 2));
@@ -1433,6 +1442,7 @@ void Widget::drawRectangles(QPainter &painter)
     }
 }
 
+#ifdef _DEBUG
 void Widget::writeConfig()
 {
     if (!configAvailable) {
