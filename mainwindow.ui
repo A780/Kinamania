@@ -37,7 +37,14 @@
     <property name="title">
      <string>&amp;Game</string>
     </property>
-    <addaction name="action_New_Game"/>
+    <widget class="QMenu" name="menu_New_Game">
+     <property name="title">
+      <string>&amp;New Game</string>
+     </property>
+     <addaction name="actionGame_Mode_A"/>
+     <addaction name="actionGame_Mode_B"/>
+    </widget>
+    <addaction name="menu_New_Game"/>
     <addaction name="action_Reset"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
@@ -61,14 +68,6 @@
    <addaction name="menu_Settings"/>
    <addaction name="menu_Help"/>
   </widget>
-  <action name="action_New_Game">
-   <property name="text">
-    <string>&amp;New Game</string>
-   </property>
-   <property name="shortcut">
-    <string>F5</string>
-   </property>
-  </action>
   <action name="action_Quit">
    <property name="text">
     <string>&amp;Quit</string>
@@ -109,6 +108,22 @@
   <action name="action_Original_screen_size">
    <property name="text">
     <string>&amp;Original Size</string>
+   </property>
+  </action>
+  <action name="actionGame_Mode_A">
+   <property name="text">
+    <string>Game Mode &amp;A</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionGame_Mode_B">
+   <property name="text">
+    <string>Game Mode &amp;B</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
    </property>
   </action>
  </widget>

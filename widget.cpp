@@ -63,7 +63,7 @@ Widget::Widget(QWidget *parent)
 
     resetAllVariables();
 
-    currentGameState = GameB;
+    currentGameState = MainScreen;
 
     // ------------------ Load gfx and sfx ------------------- //
     loadAllGfx();
@@ -393,35 +393,65 @@ void Widget::initStrings()
 void Widget::refreshDelay()
 {
 #ifdef _DEBUG
-    qDebug() << "--------------- Scale Level is:" << getScaleLevel();
+    qDebug() << "--------------- Scale Level is:" << getScaleLevel() << currentGameState << previousGameState << dendyState;
 #endif
 
-    if (score >= 0 && score < 10) {
-        delay = level[0] / getScaleLevel();
-    }
+    if (currentGameState == TheGame) {
+        if (score >= 0 && score < 10) {
+            delay = level[0] / getScaleLevel();
+        }
 
-    if (score >= 10 && score < 15) {
-        delay = level[1] / getScaleLevel();
-    }
+        if (score >= 10 && score < 15) {
+            delay = level[1] / getScaleLevel();
+        }
 
-    if (score >= 15 && score < 25) {
-        delay = level[2] / getScaleLevel();
-    }
+        if (score >= 15 && score < 25) {
+            delay = level[2] / getScaleLevel();
+        }
 
-    if (score >= 25 && score < 50) {
-        delay = level[3] / getScaleLevel();
-    }
+        if (score >= 25 && score < 50) {
+            delay = level[3] / getScaleLevel();
+        }
 
-    if (score >= 50 && score < 75) {
-        delay = level[4] / getScaleLevel();
-    }
+        if (score >= 50 && score < 75) {
+            delay = level[4] / getScaleLevel();
+        }
 
-    if (score >= 75 && score < 95) {
-        delay = level[5] / getScaleLevel();
-    }
+        if (score >= 75 && score < 95) {
+            delay = level[5] / getScaleLevel();
+        }
 
-    if (score >= 95 && score < 100) {
-        delay = level[6] / getScaleLevel();
+        if (score >= 95 && score < 100) {
+            delay = level[6] / getScaleLevel();
+        }
+    } else if (currentGameState == GameB) { // Delays for Game B mode
+        if (score >= 0 && score < 10) {
+            delay = level[0] / getScaleLevel();
+        }
+
+        if (score >= 10 && score < 20) {
+            delay = (level[0] - 10) / getScaleLevel();
+        }
+
+        if (score >= 20 && score < 30) {
+            delay = (level[0] - 20) / getScaleLevel();
+        }
+
+        if (score >= 30 && score < 40) {
+            delay = (level[0] - 30) / getScaleLevel();
+        }
+
+        if (score >= 40 && score < 50) {
+            delay = (level[0] - 40) / getScaleLevel();
+        }
+
+        if (score >= 50 && score < 85) {
+            delay = level[1] / getScaleLevel();
+        }
+
+        if (score >= 85 && score < 100) {
+            delay = (level[1] - 5) / getScaleLevel();
+        }
     }
 }
 
@@ -435,12 +465,14 @@ void Widget::resetAllVariables()
     dendyDelay = 0;
     brokenDelay = 0;
     brokenState = (-1);
-    //    score = 98;
+    //    score = 0;
     score = 0;
-    //    lives = 6;
-    lives = 3;
+        lives = 6;
+    //lives = 3;
     delay = 100;
     //    gotIt = 0;
+
+    previousGameState = GameB;
 
     for (int i = 0; i < 4; ++i) {
         gbNum[i] = (-1);
@@ -531,9 +563,54 @@ void Widget::timerEvent(QTimerEvent */*event*/)
         if (brokenDelay) {
             --brokenDelay;
         } else {
-            //if (score) {
-            gbLevel = 3;
-            //}
+
+            if (dendyState == (-1)) {
+                if (dendy >= 20 && dendy < 25) {
+                    //if (1) {
+                    if (!(dendyDelay > 0)) {
+                        dendyDelay = 4;
+                    }
+                }
+            }
+
+            if (dendyDelay >= 0) {
+                --dendyDelay;
+            }
+
+            if (dendyDelay <= 0 && dendyState != (-1)) {
+                dendyState = (-1);
+            }
+
+#ifdef _DEBUG
+            qDebug() << "############### Dendy" << dendyDelay << dendyState << dendy;
+#endif
+
+            switch (dendyDelay) {
+            case 3:
+            case 2: {
+                dendyState = 0;
+                break;
+            }
+            case 1:
+            case 0: {
+                dendyState = 1;
+                break;
+            }
+            default:
+                break;
+            }
+
+            if (score >= 0 && score < 15) {
+                gbLevel = 0;
+            } else if (score >= 15 && score < 45) {
+                gbLevel = 1;
+            } else if (score >= 45 && score < 85) {
+                gbLevel = 2;
+            } else if (score >= 85 && score < 100) {
+                gbLevel = 3;
+            }
+
+            // gbLevel = 3;
 
             qDebug() << "1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Sides:" << gbNum[0] << gbNum[1] << gbNum[2] << gbNum[3];
 
@@ -607,7 +684,14 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 }
             }
 
-            if (gbInterval == 0) {
+            int canSp = 0;
+            for (int i = 0; i <= gbLevel; ++i) {
+                if (gbCansState[i] == (-1)) {
+                    ++canSp;
+                }
+            }
+
+            if (canSp == gbLevel + 1) {
                 gbCansState[0] = 0;
             }
 
@@ -619,16 +703,58 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
             ++gbInterval;
 
-            ++canState;
+            //++canState;
 
-            if (canState == 4 && sideState == chiefState) {
-                ++score;
-                if (sound && s_got->isFinished()) {
-                    s_got->play();
-                }
+
+            int movePlay = 0;
+            for (int i = 0; i < 4; ++i) {
+                 if (gbCansState[i] == 4 && gbSideState[i] == chiefState) {
+                    ++movePlay;
+                    ++score;
+                    if (sound && s_got->isFinished()) {
+                        s_got->play();
+                    }
 #ifdef _DEBUG
-                qDebug() << "You won! Can is:" << score;
+                    qDebug() << "6!!!!!!!!!!!!!!!!!!!!!!! You won! Can is:" << score;
 #endif
+                } else if (gbCansState[i] == 4 && gbSideState[i] != chiefState && dendyState == (-1)) {
+                     ++movePlay;
+                     --lives;
+
+                     brokenState = gbSideState[i];
+                     //gotIt = 1;
+                     brokenDelay = 4;
+
+                     if (sound && s_miss->isFinished()) {
+                         s_miss->play();
+                     }
+ #ifdef _DEBUG
+                     qDebug() << "7!!!!!!!!!!!!!!!!!!!!!!! You Lose! Lives:" << lives;
+ #endif
+                     if (lives < 0) {
+                         currentGameState = GameOver;
+                         resetAllVariables();
+                     }
+                 }
+            }
+
+            if (!movePlay) {
+                if (sound && s_move->isFinished()) {
+                    s_move->play();
+                }
+            }
+
+            //            if (movePlay) {
+            //            if (sound && s_move->isFinished()) {
+            //                s_move->play();
+            //            }}
+
+            /*if (canState == 4 && sideState == chiefState) {
+                //++score;
+                //if (sound && s_got->isFinished()) {
+                //    s_got->play();
+                //}
+
             } else if (canState == 4 && sideState != chiefState && dendyState == (-1)) {
                 --lives;
 
@@ -650,7 +776,7 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                 if (sound && s_move->isFinished()) {
                     s_move->play();
                 }
-            }
+            }*/
 
             for (int i = 0; i <= gbLevel; ++i) {
                 if (gbCansState[i] >= 4) {
@@ -793,14 +919,14 @@ void Widget::keyPressEvent(QKeyEvent *event)
 #endif
 
     if (currentGameState == MainScreen) {
-        currentGameState = TheGame;
+        currentGameState = previousGameState;
     }
 
     bool state = keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
 
     if (state) {
         keysAvailable = false;
-        currentGameState = TheGame;
+        currentGameState = previousGameState;
     }
 
     //gotIt = 0;
@@ -844,10 +970,12 @@ void Widget::keyPressEvent(QKeyEvent *event)
     }
     case Qt::Key_F6: {
         buttonState = 5;
+        slotStartNewGameB();
         break;
     }
     case Qt::Key_F5: {
         buttonState = 4;
+        slotStartNewGameA();
         break;
     }
     default:
@@ -891,14 +1019,14 @@ void Widget::mousePressEvent(QMouseEvent *event)
 #endif
 
     if (currentGameState == MainScreen) {
-        currentGameState = TheGame;
+        currentGameState = previousGameState;
     }
 
     bool state = keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
 
     if (state) {
         keysAvailable = false;
-        currentGameState = TheGame;
+        currentGameState = previousGameState;
     }
 
     //gotIt = 0;
@@ -924,11 +1052,12 @@ void Widget::mousePressEvent(QMouseEvent *event)
 
     if (mouseCoords[4].contains(event->pos())) {
         buttonState = 4;
-        slotStartNewGame();
+        slotStartNewGameA();
     }
 
     if (mouseCoords[5].contains(event->pos())) {
         buttonState = 5;
+        slotStartNewGameB();
     }
 
     if (mouseCoords[6].contains(event->pos())) {
@@ -959,11 +1088,18 @@ void Widget::slotEnableSound(bool aSound)
     sound = aSound;
 }
 
-void Widget::slotStartNewGame()
+void Widget::slotStartNewGameA()
 {
     resetAllVariables();
-    currentGameState = TheGame;
+    previousGameState = currentGameState = TheGame;
     buttonState = 4; // Emulate pushing F5 button
+}
+
+void Widget::slotStartNewGameB()
+{
+    resetAllVariables();
+    previousGameState = currentGameState = GameB;
+    buttonState = 5; // Emulate pushing F6 button
 }
 
 void Widget::slotReset()
@@ -997,15 +1133,36 @@ void Widget::drawGameFrame()
         break;
     }
     case GameB: {
+        // Draw pepsi cans
         for (int i = 0; i < 4; ++i) {
             if (gbCansState[i] != (-1)) {
                 painter.drawPixmap(cansCoords[gbSideState[i]][gbCansState[i]],
                         (gbSideState[i] % 2) ? pixCans[gbCansState[i]] : pixCans[gbCansState[i] + 4]);
-            } /*else if (brokenDelay && brokenState != (-1)) {
+            } else if (brokenDelay && brokenState != (-1)) {
                 painter.drawPixmap((brokenState % 2 == 0) ? brokenCoords[0] : brokenCoords[1],
                         (brokenState % 2 == 0) ? pixBroken[0] : pixBroken[1]);
-            }*/
+            }
         }
+
+        // Draw chief
+        if (chiefState != (-1)) {
+            painter.drawPixmap(chiefCoords[chiefState], pixChiefs[chiefState]);
+        }
+
+        // Draw Dendy
+        if (dendyState != (-1)) {
+            painter.drawPixmap(dendyCoords[dendyState], pixDendy[dendyState]);
+        }
+
+        // Draw chairbar
+        drawChairBar(painter);
+
+        // Draw 90 + score
+        drawDigitPairs(90, 0, painter);
+        drawDigitPairs(score, 1, painter);
+
+        // Draw buttons
+        drawButtons(painter);
         break;
     }
     case TheGame: {
@@ -1327,7 +1484,7 @@ void Widget::pauseGame(bool aPause)
     if (aPause) {
         currentGameState = Pause;
     } else {
-        currentGameState = TheGame;
+        currentGameState = previousGameState;
     }
 }
 

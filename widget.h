@@ -85,6 +85,7 @@ private:
         GameB
     };
 
+    // Game B Mode
     int gbNum[4];
     int gbSideState[4];
     int gbLevel;
@@ -92,8 +93,10 @@ private:
     int gbInterval;
     bool gbUpdateCoords[4];
     bool gbCanSpawn;
+    // End Game B Mode
 
     int currentGameState;
+    int previousGameState;
 
     QSound *s_got;
     QSound *s_move;
@@ -204,7 +207,8 @@ protected slots:
 
 protected slots:
     void slotEnableSound(bool aSound);
-    void slotStartNewGame();
+    void slotStartNewGameA();
+    void slotStartNewGameB();
     void slotReset();
     void slotSetPixmapSize(int w, int h);
 };
