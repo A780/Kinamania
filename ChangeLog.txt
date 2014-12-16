@@ -23,6 +23,7 @@ v. 0.3 (12/14/2014 - 12/16/2014)
     * Add code for belching and slurping;
     * Add new sounds;
     * Fix belching sound playing;
+    * Add additional files.
 
 v. 0.2 (12/13/2014)
 

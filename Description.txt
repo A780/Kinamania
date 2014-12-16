@@ -1,6 +1,45 @@
+Please rename "Kinamania_example.ini" to "Kinamania.ini", if you want use settings from there.
+[Canvas]        - Canvas size, equal to the size of the file "background.png";
+
+Sprites are drawn to the right and down:
+
+   *+------+
+    | s  p |
+    | r  i |
+    | t  e |
+    +------+
+
+* - The start point of drawing the sprite.
+
+[CanCoords]     - Coordinates of cans sprites and frames;
+[ChiefCoords]   - Coordinates of player sprites;
+[LiveCoords]    - Coordinates of lives sprite;
+[BrokenCoords]  - Coordinates of broken cans (falls) sprites;
+[DigitCoords]   - Coordinates of digits sprites;
+[DendyCoords]   - Coordinates of dendy sprites;
+[ButtonsCoords] - Coordinates of pushed buttons sprites;
+
+[MouseCoords]   - Coordinates of the rectangle touches, equal to the size of the files "button_N.png";
+
+Text are drawn to the right and up:
+
+    +------+
+    | t  e |
+    | x  t |
+   *+------+
+
+* - The start point of drawing the sprite.
+
+
+[HintsCoords]   - Coordinates of rendering text hints on the main screen;
+
+[Levels]        - Levels of delay, the fewer, the harder the game.
+
+[Rectangles]    - Drawing rectangle touches "false" or "true".
+
 Please rename the "gfx_example" folder to "gfx", if you want use graphics from there.
 
-List of required files:
+List of required gfx files:
 12/13/2014  12:41 AM           254,111 background.png
 12/12/2014  10:47 PM             4,534 broken_0.png
 12/12/2014  10:51 PM             4,531 broken_1.png
@@ -37,3 +76,19 @@ List of required files:
 12/13/2014  12:34 AM               290 digit_7.png
 12/13/2014  12:34 AM               408 digit_8.png
 12/13/2014  12:34 AM               377 digit_9.png
+
+If any gfx file does not exist, the graphics from gfx folder will not be used.
+
+List of required sfx files:
+12/16/2014  03:55 AM            13,346 Belching.wav
+08/01/2010  09:21 PM            65,586 Gameover.wav
+12/12/2014  11:53 PM            60,002 Got_0.wav
+12/16/2014  08:10 PM           101,410 Got_1.wav
+12/16/2014  07:59 PM            71,006 Got_2.wav
+12/16/2014  08:00 PM            81,142 Got_3.wav
+08/01/2010  09:21 PM             3,404 Miss.wav
+08/01/2010  09:21 PM               776 Move.wav
+08/01/2010  09:21 PM            64,080 Start.wav
+12/14/2014  12:42 AM           103,698 Win.wav
+
+If any sfx file does not exist, the sound off completely.

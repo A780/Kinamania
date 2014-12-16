@@ -34,4 +34,5 @@ TRANSLATIONS += l10n/kinamania_ru.ts \
 OTHER_FILES +=  ReadMe.md \
                 ChangeLog.txt \
                 Description.txt \
+                Kinamania_example.ini \
                 kinamania.rc
