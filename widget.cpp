@@ -776,16 +776,16 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                     } else if (dendy >= 75 && dendy < 100) {
                         s_got[3]->play();
                     }
+
+                    if (score == 25 || score == 50 || score == 75) {
+                        if (sound && s_belching->isFinished()) {
+                            s_belching->play();
+                        }
+                    }
                 }
             } else if (missPlay) {
                 if (sound && s_miss->isFinished()) {
                     s_miss->play();
-                }
-            }
-
-            if (score == 25 || score == 50 || score == 75) {
-                if (sound && s_belching->isFinished()) {
-                    s_belching->play();
                 }
             }
 
@@ -931,6 +931,12 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                     } else if (dendy >= 75 && dendy < 100) {
                         s_got[3]->play();
                     }
+
+                    if (score == 25 || score == 50 || score == 75) {
+                        if (sound && s_belching->isFinished()) {
+                            s_belching->play();
+                        }
+                    }
                 }
 #ifdef _DEBUG
                 qDebug() << "You won! Can is:" << score;
@@ -955,12 +961,6 @@ void Widget::timerEvent(QTimerEvent */*event*/)
             } else {
                 if (sound && s_move->isFinished()) {
                     s_move->play();
-                }
-            }
-
-            if (score == 25 || score == 50 || score == 75) {
-                if (sound && s_belching->isFinished()) {
-                    s_belching->play();
                 }
             }
 

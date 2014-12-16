@@ -126,27 +126,27 @@
 <context>
     <name>Widget</name>
     <message>
-        <location filename="../widget.cpp" line="386"/>
+        <location filename="../widget.cpp" line="387"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="387"/>
+        <location filename="../widget.cpp" line="388"/>
         <source>Press any key to start the game!</source>
         <translation>Press any key to start the game!</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="390"/>
+        <location filename="../widget.cpp" line="391"/>
         <source>Kinamania - The Game</source>
         <translation>Kinamania - The Game</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="1345"/>
+        <location filename="../widget.cpp" line="1394"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="1346"/>
+        <location filename="../widget.cpp" line="1395"/>
         <source>F6</source>
         <translation>F6</translation>
     </message>
@@ -155,7 +155,7 @@
         <translation type="obsolete">Press any key for start game!</translation>
     </message>
     <message>
-        <location filename="../widget.cpp" line="388"/>
+        <location filename="../widget.cpp" line="389"/>
         <source>Game over!</source>
         <translation>Game over!</translation>
     </message>

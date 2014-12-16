@@ -21,6 +21,8 @@ v. 0.3 (12/14/2014 - 12/16/2014)
     * Update translations;
     * Fix bug with previous Game State;
     * Add code for belching and slurping;
+    * Add new sounds;
+    * Fix belching sound playing;
 
 v. 0.2 (12/13/2014)
 
