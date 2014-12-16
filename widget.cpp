@@ -767,19 +767,19 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                     }
                 }
                 if (sound && isF) {
-                    if (dendy >= 0 && dendy < 25) {
-                        s_got[0]->play();
-                    } else if (dendy >= 25 && dendy < 50) {
-                        s_got[1]->play();
-                    } else if (dendy >= 50 && dendy < 75) {
-                        s_got[2]->play();
-                    } else if (dendy >= 75 && dendy < 100) {
-                        s_got[3]->play();
-                    }
-
                     if (score == 25 || score == 50 || score == 75) {
                         if (sound && s_belching->isFinished()) {
                             s_belching->play();
+                        }
+                    } else {
+                        if (dendy >= 0 && dendy < 25) {
+                            s_got[0]->play();
+                        } else if (dendy >= 25 && dendy < 50) {
+                            s_got[1]->play();
+                        } else if (dendy >= 50 && dendy < 75) {
+                            s_got[2]->play();
+                        } else if (dendy >= 75 && dendy < 100) {
+                            s_got[3]->play();
                         }
                     }
                 }
@@ -922,19 +922,19 @@ void Widget::timerEvent(QTimerEvent */*event*/)
                     }
                 }
                 if (sound && isF) {
-                    if (dendy >= 0 && dendy < 25) {
-                        s_got[0]->play();
-                    } else if (dendy >= 25 && dendy < 50) {
-                        s_got[1]->play();
-                    } else if (dendy >= 50 && dendy < 75) {
-                        s_got[2]->play();
-                    } else if (dendy >= 75 && dendy < 100) {
-                        s_got[3]->play();
-                    }
-
                     if (score == 25 || score == 50 || score == 75) {
                         if (sound && s_belching->isFinished()) {
                             s_belching->play();
+                        }
+                    } else {
+                        if (dendy >= 0 && dendy < 25) {
+                            s_got[0]->play();
+                        } else if (dendy >= 25 && dendy < 50) {
+                            s_got[1]->play();
+                        } else if (dendy >= 50 && dendy < 75) {
+                            s_got[2]->play();
+                        } else if (dendy >= 75 && dendy < 100) {
+                            s_got[3]->play();
                         }
                     }
                 }
