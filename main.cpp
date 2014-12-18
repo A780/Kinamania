@@ -1,15 +1,23 @@
-#include "mainwindow.h"
-
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
 #include <QFileInfo>
 #include <QSettings>
 
+#ifdef Q_OS_ANDROID
+#include <QDesktopWidget>
+#endif
+
 #include <ctime>
 
 #ifdef _DEBUG
 #include <QDebug>
+#endif
+
+#ifdef Q_OS_ANDROID
+#include "widget.h"
+#else
+#include "mainwindow.h"
 #endif
 
 int main(int argc, char *argv[])
@@ -18,6 +26,11 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    qApp->setOrganizationDomain("hk");
+    qApp->setOrganizationName("CherveThread's Group");
+    qApp->setApplicationName("Kinamania");
+
+#ifndef Q_OS_ANDROID
     bool config = true;
     QString fileName = qApp->applicationDirPath() + "/Kinamania.ini";
     QFileInfo fileInfo(fileName);
@@ -28,11 +41,16 @@ int main(int argc, char *argv[])
 #endif
         config = false;
     }
+#endif
 
     QTranslator appTranslator;
     appTranslator.load("kinamania_" + QLocale::system().name(), "://l10n/");
     a.installTranslator(&appTranslator);
-
+#ifdef Q_OS_ANDROID
+    Widget w;
+    w.slotSetPixmapSize(qApp->desktop()->screenGeometry().width(), qApp->desktop()->screenGeometry().height());
+    w.showFullScreen();
+#else
     MainWindow w;
     if (!config) {
         w.setCanvasSize(640, 399);
@@ -50,6 +68,7 @@ int main(int argc, char *argv[])
         w.setCanvasSize(canvas_w, canvas_h);
     }
     w.show();
+#endif
 
     return a.exec();
 }

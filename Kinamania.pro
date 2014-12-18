@@ -15,13 +15,15 @@ QMAKE_CXXFLAGS_DEBUG += -D_DEBUG
 #QMAKE_CXXFLAGS_RELEASE += -D_DEBUG
 
 SOURCES +=  main.cpp \
-            mainwindow.cpp \
             widget.cpp
 
-HEADERS  += mainwindow.h \
-            widget.h
+!android:SOURCES += mainwindow.cpp
 
-FORMS    += mainwindow.ui
+HEADERS  += widget.h
+
+!android:HEADERS  += mainwindow.h
+
+!android:FORMS    += mainwindow.ui
 
 RESOURCES += kinamania.qrc
 
@@ -36,3 +38,10 @@ OTHER_FILES +=  ReadMe.md \
                 Description.txt \
                 Kinamania_example.ini \
                 kinamania.rc
+
+DISTFILES += \
+    android/AndroidManifest.xml \
+    android/res/values/libs.xml \
+    android/build.gradle
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

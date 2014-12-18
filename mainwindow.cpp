@@ -50,11 +50,11 @@ void MainWindow::slotShowAbout()
                                                        "* Pause or G - Pause.<br><br>"
                                                        "Also, you can use mouse control.<br><br>"
                                                        "Get the latest release of the Kinamania game on <a href=\"https://github.com/A780/Kinamania/releases\">this page</a>.<br>"
-                                                       "Teaser of the Kinamania game is available on <a href=\"http://www.youtube.com/watch?v=0ggWeAdZClc\">YouTube</a>!<br>"
+                                                       "Teaser of the game is available on <a href=\"https://vimeo.com/114717786\">Vimeo</a> and <a href=\"http://www.youtube.com/watch?v=0ggWeAdZClc\">YouTube</a>!<br>"
                                                        "Source code is available on <a href=\"https://github.com/A780/Kinamania\">GitHub</a>.<br>"
                                                        "<center><table cellspacing=0 cellpadding=0><tr><td>"
                                                        "<b>Big thanks for Help, /fag!</b><br>"
-                                                       "<b>Anonymous artist and <a href=\"mailto:a780a@yandex.ru\">A780</a></b><br>"
+                                                       "<b><a href=\"mailto:tsvr-kun@yandex.ru\">Tsveerkoon</a> and <a href=\"mailto:a780a@yandex.ru\">A780</a></b><br>"
                                                        "<b>December, 2014</b><br>"
                                                        "</td><td><img src=\":/gfx/worm.png\"/></td></tr></table></center>"));
 }

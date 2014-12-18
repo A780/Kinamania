@@ -212,6 +212,8 @@ protected slots:
     void slotStartNewGameModeA();
     void slotStartNewGameModeB();
     void slotReset();
+
+public slots:
     void slotSetPixmapSize(int w, int h);
 };
 

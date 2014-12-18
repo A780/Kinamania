@@ -329,8 +329,11 @@ int Widget::getScaleLevel() const
             (screen_h > 798 && screen_h <= 1197)) {
         scale = 3;
     }
-
+#ifdef Q_OS_ANDROID
+    return scale * 3; // Fix delay for android
+#else
     return scale;
+#endif
 }
 
 void Widget::initLevels()
@@ -1610,8 +1613,11 @@ bool Widget::checkAllGfxRes()
 bool Widget::checkAllSfxRes()
 {
     sfxFiles = getAllSfxFiles();
-
+#ifdef Q_OS_ANDROID
+    dirName = "assets:/sfx/";
+#else
     dirName = qApp->applicationDirPath() + "/sfx/";
+#endif
     QFileInfo dirInfo(dirName);
     QStringList filesList;
     if (!dirInfo.exists() && !dirInfo.isDir() && !dirInfo.isReadable()) {
@@ -1647,7 +1653,6 @@ QStringList Widget::getAllSfxFiles() const
              << "Gameover.wav"
              << "Win.wav"
              << "Belching.wav";
-
     return sfxFiles;
 }
 
