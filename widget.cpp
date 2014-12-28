@@ -1054,6 +1054,15 @@ void Widget::keyPressEvent(QKeyEvent *event)
         slotStartNewGameModeB();
         break;
     }
+#ifdef Q_OS_ANDROID
+    case Qt::Key_Back: {
+        qApp->quit();
+        break;
+    }
+    case Qt::Key_Menu: {
+        break;
+    }
+#endif
     default:
         break;
     }
@@ -1067,6 +1076,10 @@ void Widget::keyReleaseEvent(QKeyEvent *event)
     case 0x424:
     case 0x414:
     case 0x41F:
+#ifdef Q_OS_ANDROID
+    case Qt::Key_Back:
+    case Qt::Key_Menu:
+#endif
     case Qt::Key_Q:
     case Qt::Key_7:
     case Qt::Key_P:
