@@ -27,7 +27,6 @@ protected:
     void changeEvent(QEvent *e);
 
 protected slots:
-    void slotShowAbout();
     void slotDisableSoundMenu();
     void slotSetOriginalScreenSize();
 
