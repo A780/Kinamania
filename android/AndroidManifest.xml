@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <manifest package="hk.ch.kinamania" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.4" android:versionCode="1" android:installLocation="auto">
     <application android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="Kinamania" android:icon="@drawable/icon">
-        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:label="-- %%INSERT_APP_NAME%% --" android:screenOrientation="landscape" android:launchMode="singleTop">
+        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="hk.ch.kinamania.VibroClient.Vibro" android:label="-- %%INSERT_APP_NAME%% --" android:screenOrientation="landscape" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -54,4 +54,5 @@
     <!-- %%INSERT_FEATURES -->
 
 <uses-permission android:name="android.permission.SET_ORIENTATION"/>
+<uses-permission android:name="android.permission.VIBRATE"/>
 </manifest>

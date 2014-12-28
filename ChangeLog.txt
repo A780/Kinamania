@@ -8,6 +8,7 @@ v. 0.4 (12/17/2014 - 12/28/2014)
     * Android: Fix volume keys behavior;
     * Android: Add quit game on back key;
     * Android: Add Context Menu on menu key;
+    * Android: Add haptics vibration;
 
 v. 0.3 (12/14/2014 - 12/16/2014)
     * Add current time to pause screen;

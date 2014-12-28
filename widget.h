@@ -57,6 +57,7 @@ private:
 
     int buttonState;
 
+    bool vibro; // For Android
     bool sound;
     int soundDelay;
 
@@ -236,6 +237,7 @@ protected slots:
 
 protected slots:
     void slotEnableSound(bool aSound);
+    void slotEnableVibro(bool aVibro); // For Android
     void slotStartNewGameModeA();
     void slotStartNewGameModeB();
     void slotReset();

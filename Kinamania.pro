@@ -5,8 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
+android:QT += androidextras
 
 TARGET = Kinamania
 TEMPLATE = app
@@ -43,6 +43,7 @@ DISTFILES += \
     android/AndroidManifest.xml \
     android/res/values/libs.xml \
     android/build.gradle \
-    android/src/org/qtproject/qt5/android/bindings/QtActivity.java
+    android/src/org/qtproject/qt5/android/bindings/QtActivity.java \
+    android/src/hk/ch/kinamania/Vibro.java
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

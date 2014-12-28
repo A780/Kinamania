@@ -41,7 +41,7 @@ void MainWindow::changeEvent(QEvent *e)
 void MainWindow::slotShowAbout()
 {
     QMessageBox::about(this, tr("About Kinamania"), tr("<p><center><img src=\":/gfx/eyes.jpg\"/></center></p>"
-                                                       "<p><strong>Version 0.3</strong></p>"
+                                                       "<p><strong>Version 0.4</strong></p>"
                                                        "<b>Key controls:</b><br>"
                                                        "* Q, A, P, L or 7, 9, 1, 3 on NumPad - Move;<br>"
                                                        "* F5 - New Game;<br>"

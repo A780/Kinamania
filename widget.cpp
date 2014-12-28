@@ -9,6 +9,10 @@
 #include <QDebug>
 #endif
 
+#ifdef Q_OS_ANDROID
+#include <QtAndroidExtras/QAndroidJniObject>
+#endif
+
 //const int coords[][] = ;
 
 Widget::Widget(QWidget *parent)
@@ -17,6 +21,8 @@ Widget::Widget(QWidget *parent)
       screen_w(640), screen_h(399)
 {
     sound = true;
+    vibro = true;
+
     soundDelay = 75;
 
     keysDelay = 200;
@@ -999,13 +1005,17 @@ void Widget::keyPressEvent(QKeyEvent *event)
     qDebug() << "Key Pressed:" << event->key();
 #endif
 
+    int qVibrate = 0;
+
     if (event->key() != Qt::Key_Menu && currentGameState == MainScreen) {
+        ++qVibrate;
         currentGameState = previousGameState;
     }
 
     bool state = event->key() != Qt::Key_Menu && keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
 
     if (state) {
+        ++qVibrate;
         keysAvailable = false;
         currentGameState = previousGameState;
     }
@@ -1016,12 +1026,14 @@ void Widget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Q:
     case Qt::Key_7:
     case 0x419: { // Q in Russian
+        ++qVibrate;
         chiefState = buttonState = 0;
         break;
     }
     case Qt::Key_P:
     case Qt::Key_9:
     case 0x417: { // P in Russian
+        ++qVibrate;
         chiefState = 1;
         buttonState = 2;
         break;
@@ -1029,6 +1041,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_A:
     case Qt::Key_1:
     case 0x424: { // A in Russian
+        ++qVibrate;
         chiefState = 2;
         buttonState = 1;
         break;
@@ -1036,6 +1049,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_L:
     case Qt::Key_3:
     case 0x414: { // L in Russian
+        ++qVibrate;
         chiefState = 3;
         buttonState = 3;
         break;
@@ -1043,6 +1057,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Pause:
     case Qt::Key_G:
     case 0x41F: { // G in Russian
+        ++qVibrate;
         buttonState = 6;
         if (!state) {
             pauseGame(currentGameState != Pause);
@@ -1050,11 +1065,13 @@ void Widget::keyPressEvent(QKeyEvent *event)
         break;
     }
     case Qt::Key_F6: {
+        ++qVibrate;
         buttonState = 4;
         slotStartNewGameModeA();
         break;
     }
     case Qt::Key_F5: {
+        ++qVibrate;
         buttonState = 5;
         slotStartNewGameModeB();
         break;
@@ -1072,6 +1089,12 @@ void Widget::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
+
+#ifdef Q_OS_ANDROID
+    if (vibro && qVibrate > 0) {
+        QAndroidJniObject::callStaticMethod<void>("hk/ch/kinamania/VibroClient/Vibro", "start", "(I)V", 30);
+    }
+#endif
 }
 
 void Widget::keyReleaseEvent(QKeyEvent *event)
@@ -1113,13 +1136,17 @@ void Widget::mousePressEvent(QMouseEvent *event)
     qDebug() << "MousePress" << event->pos();
 #endif
 
+    int qVibrate = 0;
+
     if (currentGameState == MainScreen) {
+        ++qVibrate;
         currentGameState = previousGameState;
     }
 
     bool state = keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
 
     if (state) {
+        ++qVibrate;
         keysAvailable = false;
         currentGameState = previousGameState;
     }
@@ -1127,40 +1154,53 @@ void Widget::mousePressEvent(QMouseEvent *event)
     //gotIt = 0;
 
     if (mouseCoords[0].contains(event->pos())) {
+        ++qVibrate;
         chiefState = buttonState = 0;
     }
 
     if (mouseCoords[2].contains(event->pos())) {
+        ++qVibrate;
         chiefState = 1;
         buttonState = 2;
     }
 
     if (mouseCoords[1].contains(event->pos())) {
+        ++qVibrate;
         chiefState = 2;
         buttonState = 1;
     }
 
     if (mouseCoords[3].contains(event->pos())) {
+        ++qVibrate;
         chiefState = 3;
         buttonState = 3;
     }
 
     if (mouseCoords[4].contains(event->pos())) {
+        ++qVibrate;
         buttonState = 5;
         slotStartNewGameModeA();
     }
 
     if (mouseCoords[5].contains(event->pos())) {
+        ++qVibrate;
         buttonState = 4;
         slotStartNewGameModeB();
     }
 
     if (mouseCoords[6].contains(event->pos())) {
+        ++qVibrate;
         buttonState = 6;
         if (!state) {
             pauseGame(currentGameState != Pause);
         }
     }
+
+#ifdef Q_OS_ANDROID
+    if (vibro && qVibrate > 0) {
+            QAndroidJniObject::callStaticMethod<void>("hk/ch/kinamania/VibroClient/Vibro", "start", "(I)V", 30);
+    }
+#endif
 }
 
 void Widget::mouseReleaseEvent(QMouseEvent *event)
@@ -1181,6 +1221,14 @@ void Widget::slotEnableSound(bool aSound)
     qDebug() << "Sound" << aSound;
 #endif
     sound = aSound;
+}
+
+void Widget::slotEnableVibro(bool aVibro)
+{
+    vibro = aVibro;
+#ifdef _DEBUG
+    qDebug() << "Vibro" << aVibro;
+#endif
 }
 
 void Widget::slotStartNewGameModeB()
@@ -1523,7 +1571,7 @@ void Widget::createActions()
     actionVibro->setText(tr("Vibro"));
     actionVibro->setCheckable(true);
     actionVibro->setChecked(true);
-    //connect(actionVibro, SIGNAL(triggered(bool)), this, SLOT(slotEnableSound(bool)));
+    connect(actionVibro, SIGNAL(triggered(bool)), this, SLOT(slotEnableVibro(bool)));
 
     actionAbout = new QAction(this);
     actionAbout->setText(tr("About..."));
