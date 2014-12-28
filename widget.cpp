@@ -73,6 +73,11 @@ Widget::Widget(QWidget *parent)
     }
     // ------------------------------------------------------- //
 
+#ifdef Q_OS_ANDROID
+    createActions();
+    createMenus();
+#endif
+
     pixSurface = new QPixmap(screen_w, screen_h);
 
     timerID = startTimer(10);
@@ -994,11 +999,11 @@ void Widget::keyPressEvent(QKeyEvent *event)
     qDebug() << "Key Pressed:" << event->key();
 #endif
 
-    if (currentGameState == MainScreen) {
+    if (event->key() != Qt::Key_Menu && currentGameState == MainScreen) {
         currentGameState = previousGameState;
     }
 
-    bool state = keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
+    bool state = event->key() != Qt::Key_Menu && keysAvailable && (currentGameState == GameOver || currentGameState == TheWon);
 
     if (state) {
         keysAvailable = false;
@@ -1060,6 +1065,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
         break;
     }
     case Qt::Key_Menu: {
+        androidMenu->show();
         break;
     }
 #endif
@@ -1457,6 +1463,77 @@ void Widget::drawRectangles(QPainter &painter)
         painter.drawRect(mouseCoords[i]);
     }
 }
+
+#ifdef Q_OS_ANDROID
+void Widget::createMenus()
+{
+    androidGameMenu_p = new QMenu;
+    androidGameMenu_p->addAction(actionNewGameA);
+    androidGameMenu_p->addAction(actionNewGameB);
+    androidGameMenu_p->setTitle(tr("Start"));
+
+    androidGameMenu = new QMenu;
+    androidGameMenu->addMenu(androidGameMenu_p);
+    androidGameMenu->addAction(actionReset);
+    androidGameMenu->addSeparator();
+    androidGameMenu->addAction(actionQuit);
+    androidGameMenu->setTitle(tr("Game"));
+
+    androidSettingsMenu = new QMenu;
+    androidSettingsMenu->addAction(actionSound);
+    androidSettingsMenu->addAction(actionVibro);
+    androidSettingsMenu->setTitle(tr("Settings"));
+
+    androidHelpMenu = new QMenu;
+    androidHelpMenu->addAction(actionAbout);
+    androidHelpMenu->addAction(actionAboutQt);
+    androidHelpMenu->setTitle(tr("Help"));
+
+    androidMenu = new QMenu;
+    androidMenu->addMenu(androidGameMenu);
+    androidMenu->addMenu(androidSettingsMenu);
+    androidMenu->addMenu(androidHelpMenu);
+}
+
+void Widget::createActions()
+{
+    actionNewGameA = new QAction(this);
+    actionNewGameA->setText(tr("Game Mode A"));
+    connect(actionNewGameA, SIGNAL(triggered()), this, SLOT(slotStartNewGameModeA()));
+
+    actionNewGameB = new QAction(this);
+    actionNewGameB->setText(tr("Game Mode B"));
+    connect(actionNewGameB, SIGNAL(triggered()), this, SLOT(slotStartNewGameModeB()));
+
+    actionReset = new QAction(this);
+    actionReset->setText(tr("Reset"));
+    connect(actionReset, SIGNAL(triggered()), this, SLOT(slotReset()));
+
+    actionQuit = new QAction(this);
+    actionQuit->setText(tr("Quit"));
+    connect(actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+    actionSound = new QAction(this);
+    actionSound->setText(tr("Sound"));
+    actionSound->setCheckable(true);
+    actionSound->setChecked(true);
+    connect(actionSound, SIGNAL(triggered(bool)), this, SLOT(slotEnableSound(bool)));
+
+    actionVibro = new QAction(this);
+    actionVibro->setText(tr("Vibro"));
+    actionVibro->setCheckable(true);
+    actionVibro->setChecked(true);
+    //connect(actionVibro, SIGNAL(triggered(bool)), this, SLOT(slotEnableSound(bool)));
+
+    actionAbout = new QAction(this);
+    actionAbout->setText(tr("About..."));
+    //connect(actionAbout, SIGNAL(triggered()), this, SLOT(quit()));
+
+    actionAboutQt = new QAction(this);
+    actionAboutQt->setText(tr("About Qt..."));
+    connect(actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+}
+#endif
 
 #ifdef _DEBUG
 void Widget::writeConfig()

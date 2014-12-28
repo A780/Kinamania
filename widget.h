@@ -10,6 +10,11 @@
 #include <QMouseEvent>
 #include <QSettings>
 
+#ifdef Q_OS_ANDROID
+#include <QMenu>
+#include <QAction>
+#endif
+
 #include <QStringList>
 
 class Widget : public QWidget
@@ -75,6 +80,23 @@ private:
 
     QStringList gfxFiles;
     QStringList sfxFiles;
+
+#ifdef Q_OS_ANDROID
+    QMenu *androidMenu;
+    QMenu *androidGameMenu;
+    QMenu *androidGameMenu_p;
+    QMenu *androidSettingsMenu;
+    QMenu *androidHelpMenu;
+
+    QAction *actionNewGameA;
+    QAction *actionNewGameB;
+    QAction *actionReset;
+    QAction *actionQuit;
+    QAction *actionSound;
+    QAction *actionVibro;
+    QAction *actionAbout;
+    QAction *actionAboutQt;
+#endif
 
     enum gameState { // 0 - Main Screen, 1 - Game B, 2 - Won, 3 - Game Over, 4 - Pause, 5 - Game A
         MainScreen,
@@ -182,6 +204,11 @@ private:
     void drawButtons(QPainter &painter);
 
     void drawRectangles(QPainter &painter);
+
+#ifdef Q_OS_ANDROID
+    void createMenus();
+    void createActions();
+#endif
 
 #ifdef _DEBUG
     void writeConfig();
