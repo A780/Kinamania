@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
 #ifndef Q_OS_ANDROID
     bool config = true;
-    QString fileName = qApp->applicationDirPath() + "/Kinamania.ini";
+    QString fileName = qApp->applicationDirPath() + "/RGame.ini";
     QFileInfo fileInfo(fileName);
 
     if (!fileInfo.exists() && !fileInfo.isFile() && !fileInfo.isReadable()) {

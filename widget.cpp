@@ -5,6 +5,8 @@
 #include <QApplication>
 #include <QTime>
 #include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
 
 #ifdef _DEBUG
 #include <QDebug>
@@ -31,7 +33,7 @@ Widget::Widget(QWidget *parent)
 
     drawRects = false;
 
-    iniFileName = qApp->applicationDirPath() + "/Kinamania.ini";
+    iniFileName = qApp->applicationDirPath() + "/RGame.ini";
     if (checkIniFile(iniFileName)) {
         iniSettings = new QSettings(iniFileName, QSettings::IniFormat);
         configAvailable = true;
@@ -94,6 +96,17 @@ Widget::Widget(QWidget *parent)
     //setFixedSize(screen_w, screen_h);
     //setWindowIcon();
     //setWindowTitle(strWindowTitle);
+
+    if (configAvailable) {
+        iniSettings->beginGroup("Window");
+#ifdef _DEBUG
+        qDebug() << "Load WindowTitle from config";
+#endif
+        parent->setWindowTitle(iniSettings->value(QString("Name")).toString());
+        iniSettings->endGroup();
+    } else {
+        parent->setWindowTitle(tr("RetroGame"));
+    }
 }
 
 void Widget::initAll()
@@ -1254,24 +1267,7 @@ void Widget::slotReset()
 
 void Widget::slotShowAbout()
 {
-    QMessageBox::about(this, tr("About Kinamania"), tr("<p><center><img src=\":/gfx/eyes.jpg\"/></center></p>"
-                                                       "<p><strong>Version 0.4</strong></p>"
-                                                       "<b>Key controls:</b><br>"
-                                                       "* Q, A, P, L or 7, 9, 1, 3 on NumPad - Move;<br>"
-                                                       "* F5 - New Game;<br>"
-                                                       "* F8 - Reset;<br>"
-                                                       "* F10 - Quit;<br>"
-                                                       "* Pause or G - Pause.<br><br>"
-                                                       "Also, you can use mouse control.<br><br>"
-                                                       "Get the latest release of the Kinamania game on <a href=\"https://github.com/A780/Kinamania/releases\">this page</a>.<br>"
-                                                       "Teaser of the game is available on <a href=\"https://vimeo.com/114717786\">Vimeo</a>!<br>"
-                                                       "View Kinamania gameplay on <a href=\"https://vimeo.com/114859939\">Vimeo</a>.<br>"
-                                                       "Source code is available on <a href=\"https://github.com/A780/Kinamania\">GitHub</a>.<br>"
-                                                       "<center><table cellspacing=0 cellpadding=0><tr><td>"
-                                                       "<b>Big thanks for Help, /fag!</b><br>"
-                                                       "<b><a href=\"mailto:tsvr-kun@yandex.ru\">Tsveerkoon</a> and <a href=\"mailto:a780a@yandex.ru\">A780</a></b><br>"
-                                                       "<b>December, 2014</b><br>"
-                                                       "</td><td><img src=\":/gfx/worm.png\"/></td></tr></table></center>"));
+    QDesktopServices::openUrl(QUrl("https://github.com/A780/Kinamania/tree/mod_1"));
 }
 
 void Widget::slotSetPixmapSize(int w, int h)
@@ -1324,7 +1320,7 @@ void Widget::drawGameFrame()
         drawChairBar(painter);
 
         // Draw 90 + score
-        drawDigitPairs(90, 0, painter);
+        //drawDigitPairs(90, 0, painter);
         drawDigitPairs(score, 1, painter);
 
         // Draw buttons
@@ -1432,7 +1428,7 @@ void Widget::drawAll(QPainter &painter)
     }
 
     // Draw 88 + 88
-    drawDigitPairs(88, 0, painter);
+    //drawDigitPairs(88, 0, painter);
     drawDigitPairs(88, 1, painter);
 
     // Draw Dendy
@@ -1610,6 +1606,10 @@ void Widget::createActions()
 void Widget::writeConfig()
 {
     if (!configAvailable) {
+        iniSettings->beginGroup("Window");
+        iniSettings->setValue("Name", tr("RGame"));
+        iniSettings->endGroup();
+
         iniSettings->beginGroup("Canvas");
         iniSettings->setValue("Width", canvas_w);
         iniSettings->setValue("Height", canvas_h);

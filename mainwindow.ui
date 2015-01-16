@@ -16,9 +16,6 @@
     <height>240</height>
    </size>
   </property>
-  <property name="windowTitle">
-   <string>Kinamania</string>
-  </property>
   <property name="windowIcon">
    <iconset resource="kinamania.qrc">
     <normaloff>:/gfx/icon.png</normaloff>:/gfx/icon.png</iconset>
@@ -78,7 +75,7 @@
   </action>
   <action name="action_About">
    <property name="text">
-    <string>&amp;About Kinamania...</string>
+    <string>&amp;Source code...</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
