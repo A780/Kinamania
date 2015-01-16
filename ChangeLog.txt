@@ -13,7 +13,8 @@ v. 0.4 (12/17/2014 - 12/28/2014)
     * Add new Win image;
     * Add new Win sound;
     * Fix TheWon delay;
-    * Update translations.
+    * Update translations;
+    * Add Android screenshot.
 
 v. 0.3 (12/14/2014 - 12/16/2014)
     * Add current time to pause screen;
