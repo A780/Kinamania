@@ -1350,7 +1350,7 @@ void Widget::drawGameFrame()
         drawChairBar(painter);
 
         // Draw 90 + score
-        drawDigitPairs(90, 0, painter);
+        //drawDigitPairs(90, 0, painter);
         drawDigitPairs(score, 1, painter);
 
         // Draw buttons
