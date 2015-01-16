@@ -493,7 +493,7 @@ void Widget::resetAllVariables()
     dendyDelay = 0;
     brokenDelay = 0;
     brokenState = (-1);
-    //    score = 0;
+    //    score = 99;
     score = 0;
     //    lives = 6;
     lives = 3;
@@ -552,7 +552,11 @@ void Widget::timerEvent(QTimerEvent */*event*/)
 
     ++msec;
 
-    if (msec == (keysDelay / getScaleLevel()) && (currentGameState == GameOver || currentGameState == TheWon)) {
+    if ((msec == (keysDelay / getScaleLevel())) && (currentGameState == GameOver)) {
+        keysAvailable = true;
+    }
+
+    if ((msec == (keysDelay * 2 / getScaleLevel())) && (currentGameState == TheWon)) {
         keysAvailable = true;
     }
 
@@ -1254,24 +1258,36 @@ void Widget::slotReset()
 
 void Widget::slotShowAbout()
 {
-    QMessageBox::about(this, tr("About Kinamania"), tr("<p><center><img src=\":/gfx/eyes.jpg\"/></center></p>"
-                                                       "<p><strong>Version 0.4</strong></p>"
-                                                       "<b>Key controls:</b><br>"
-                                                       "* Q, A, P, L or 7, 9, 1, 3 on NumPad - Move;<br>"
-                                                       "* F5 - New Game;<br>"
-                                                       "* F8 - Reset;<br>"
-                                                       "* F10 - Quit;<br>"
-                                                       "* Pause or G - Pause.<br><br>"
-                                                       "Also, you can use mouse control.<br><br>"
-                                                       "Get the latest release of the Kinamania game on <a href=\"https://github.com/A780/Kinamania/releases\">this page</a>.<br>"
-                                                       "Teaser of the game is available on <a href=\"https://vimeo.com/114717786\">Vimeo</a>!<br>"
-                                                       "View Kinamania gameplay on <a href=\"https://vimeo.com/114859939\">Vimeo</a>.<br>"
-                                                       "Source code is available on <a href=\"https://github.com/A780/Kinamania\">GitHub</a>.<br>"
-                                                       "<center><table cellspacing=0 cellpadding=0><tr><td>"
-                                                       "<b>Big thanks for Help, /fag!</b><br>"
-                                                       "<b><a href=\"mailto:tsvr-kun@yandex.ru\">Tsveerkoon</a> and <a href=\"mailto:a780a@yandex.ru\">A780</a></b><br>"
-                                                       "<b>December, 2014</b><br>"
-                                                       "</td><td><img src=\":/gfx/worm.png\"/></td></tr></table></center>"));
+    QString aboutString = "";
+
+#ifndef Q_OS_ANDROID
+    aboutString += "<p><center><img src=\":/gfx/eyes.jpg\"/></center></p>";
+#endif
+
+    aboutString += tr("<p><strong>Version 0.4</strong></p>"
+                      "<b>Key controls:</b><br>"
+                      "* Q, A, P, L or 7, 9, 1, 3 on NumPad - Move;<br>"
+                      "* F5 - New Game;<br>"
+                      "* F8 - Reset;<br>"
+                      "* F10 - Quit;<br>"
+                      "* Pause or G - Pause.<br><br>"
+                      "Also, you can use mouse control.<br><br>"
+                      "Get the latest release of the Kinamania game on <a href=\"https://github.com/A780/Kinamania/releases\">this page</a>.<br>"
+                      "Teaser of the game is available on <a href=\"https://vimeo.com/114717786\">Vimeo</a>!<br>"
+                      "View Kinamania gameplay on <a href=\"https://vimeo.com/114859939\">Vimeo</a>.<br>"
+                      "Source code is available on <a href=\"https://github.com/A780/Kinamania\">GitHub</a>.<br>"
+                      "<center><table cellspacing=0 cellpadding=0><tr><td>"
+                      "<b>Big thanks for Help, /fag!</b><br>"
+                      "<b><a href=\"mailto:tsvr-kun@yandex.ru\">Tsveerkoon</a> and <a href=\"mailto:a780a@yandex.ru\">A780</a></b><br>"
+                      "<b>December, 2014</b><br>");
+
+#ifndef Q_OS_ANDROID
+    aboutString += "</td><td><img src=\":/gfx/worm.png\"/></td></tr></table></center>";
+#else
+    aboutString += "</td><td></td></tr></table></center>";
+#endif
+
+    QMessageBox::about(this, tr("About Kinamania"), aboutString);
 }
 
 void Widget::slotSetPixmapSize(int w, int h)
