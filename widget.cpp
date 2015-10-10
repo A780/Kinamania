@@ -36,6 +36,7 @@ Widget::Widget(QWidget *parent)
         iniSettings = new QSettings(iniFileName, QSettings::IniFormat);
         configAvailable = true;
     } else {
+        iniSettings = NULL;
         configAvailable = false;
     }
 
@@ -1943,5 +1944,9 @@ void Widget::loadAllGfx()
 
 Widget::~Widget()
 {
-    /* Empty destructor */
+    if (iniSettings) {
+        delete iniSettings;
+    }
+
+    delete pixSurface;
 }
