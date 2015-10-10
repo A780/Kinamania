@@ -11,6 +11,29 @@ android:QT += androidextras
 TARGET = Kinamania
 TEMPLATE = app
 
+# Deploy sfx catalog
+D_IN = $$PWD/sfx
+D_OUT = $$OUT_PWD
+
+win32: {
+    CONFIG(debug,debug|release) {
+        D_OUT = $$D_OUT/debug
+    } else {
+        D_OUT = $$D_OUT/release
+    }
+
+    D_OUT = $$D_OUT/sfx
+
+    D_IN ~= s,/,\\,g
+    D_OUT ~= s,/,\\,g
+}
+
+deploy.commands = $(COPY_DIR) $$D_IN $$D_OUT
+first.depends = $(first) deploy
+export(first.depends)
+export(deploy.commands)
+QMAKE_EXTRA_TARGETS += first deploy
+
 QMAKE_CXXFLAGS_DEBUG += -D_DEBUG
 #QMAKE_CXXFLAGS_RELEASE += -D_DEBUG
 
