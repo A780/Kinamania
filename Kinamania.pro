@@ -64,9 +64,6 @@ OTHER_FILES +=  ReadMe.md \
 
 DISTFILES += \
     android/AndroidManifest.xml \
-    android/res/values/libs.xml \
-    android/build.gradle \
-    android/src/org/qtproject/qt5/android/bindings/QtActivity.java \
-    android/src/hk/ch/kinamania/Vibro.java
+    android/src/hk/ch/kinamania/Kinamania.java
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

@@ -1098,7 +1098,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
 
 #ifdef Q_OS_ANDROID
     if (vibro && qVibrate > 0) {
-        QAndroidJniObject::callStaticMethod<void>("hk/ch/kinamania/VibroClient/Vibro", "start", "(I)V", 30);
+        QAndroidJniObject::callStaticMethod<void>("hk/ch/kinamania/Kinamania", "vibrate", "(I)V", 30);
     }
 #endif
 }
@@ -1204,7 +1204,7 @@ void Widget::mousePressEvent(QMouseEvent *event)
 
 #ifdef Q_OS_ANDROID
     if (vibro && qVibrate > 0) {
-        QAndroidJniObject::callStaticMethod<void>("hk/ch/kinamania/VibroClient/Vibro", "start", "(I)V", 30);
+        QAndroidJniObject::callStaticMethod<void>("hk/ch/kinamania/Kinamania", "vibrate", "(I)V", 30);
     }
 #endif
 }

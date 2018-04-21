@@ -1,1 +1,0 @@
-Please put "sfx" directory here.
