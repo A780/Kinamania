@@ -12,7 +12,7 @@ TARGET = Kinamania
 TEMPLATE = app
 
 # Deploy sfx catalog
-D_IN = $$PWD/sfx
+D_IN = $$PWD/android/assets/sfx
 D_OUT = $$OUT_PWD
 
 win32: {
@@ -32,7 +32,7 @@ deploy.commands = $(COPY_DIR) $$D_IN $$D_OUT
 first.depends = $(first) deploy
 export(first.depends)
 export(deploy.commands)
-QMAKE_EXTRA_TARGETS += first deploy
+!android:QMAKE_EXTRA_TARGETS += first deploy
 
 QMAKE_CXXFLAGS_DEBUG += -D_DEBUG
 #QMAKE_CXXFLAGS_RELEASE += -D_DEBUG
