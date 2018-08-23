@@ -11,10 +11,10 @@ import android.media.AudioManager;
 
 public class Kinamania extends org.qtproject.qt5.android.bindings.QtActivity {
     public static Vibrator m_vibrator;
-    public static Kinamania m_istance;
+    public static Kinamania m_instance;
 
     public Kinamania() {
-        m_istance = this;
+        m_instance = this;
     }
 
     @Override
@@ -25,8 +25,8 @@ public class Kinamania extends org.qtproject.qt5.android.bindings.QtActivity {
 
     public static void vibrate(int x) {
         if (m_vibrator == null) {
-            if (m_istance != null) {
-              m_vibrator = (Vibrator) m_istance.getSystemService(Context.VIBRATOR_SERVICE);
+            if (m_instance != null) {
+              m_vibrator = (Vibrator) m_instance.getSystemService(Context.VIBRATOR_SERVICE);
               m_vibrator.vibrate(x);
             }
         } else {
